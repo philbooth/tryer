@@ -1,5 +1,16 @@
-(function () {
+// Conditional and repeated task invocation for node and browser.
+
+/*globals setTimeout, define, module */
+
+(function (globals) {
     'use strict';
+
+    var functions = {
+        when: when,
+        until: until
+    };
+
+    exportFunctions();
 
     // Public function `when`.
     //
@@ -210,5 +221,17 @@
     function until (options) {
         conditionallyPerformActionOrRecur(false, normaliseOptions(options));
     }
-}());
+
+    function exportFunctions () {
+        if (typeof define === 'function' && define.amd) {
+            define(function () {
+                return functions;
+            });
+        } else if (typeof module !== 'undefined' && module !== null) {
+            module.exports = functions;
+        } else {
+            globals.trier = functions;
+        }
+    }
+}(this));
 
