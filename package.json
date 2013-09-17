@@ -1,0 +1,39 @@
+{
+    "name": "trier",
+    "version": "0.1.0",
+    "author": "Phil Booth <pmbooth@gmail.com>",
+    "description": "Because everyone loves a trier! Conditional and repeated task invocation for node and browser.",
+    "contributors": [
+        { "name": "Phil Booth", "email": "pmbooth@gmail.com" }
+    ],
+    "main": "./src/trier",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/philbooth/trier.js"
+    },
+    "keywords": [
+        "repeat",
+        "retry",
+        "predicate",
+        "conditional",
+        "invocation",
+        "ender"
+    ],
+    "ender": "noop",
+    "jam": {
+        "main": "src/trier.js"
+    },
+    "devDependencies": {
+        "jshint": "2.1.x",
+        "mocha": "1.9.x",
+        "chai": "1.6.x",
+        "uglify-js": "2.3.x"
+    },
+    "license": "MIT",
+    "scripts": {
+        "lint": "./node_modules/.bin/jshint ./src/trier.js --config config/jshint.json",
+        "test": "./node_modules/.bin/mocha --ui tdd --reporter spec --colors ./test/trier.js",
+        "minify": "./node_modules/.bin/uglifyjs ./src/trier.js --compress --mangle --output ./lib/trier.min.js"
+    }
+}
+
