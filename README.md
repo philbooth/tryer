@@ -1,4 +1,4 @@
-# trier
+# trier.js
 
 [![Build status][ci-image]][ci-status]
 
