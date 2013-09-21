@@ -9,98 +9,243 @@ function invocation
 for node
 and browser.
 
-## Conditional?
+## Say what?
 
-Conditional function invocation
-means you can specify
-some pre-requisite condition
-that must be satisfied
-before your function
-will be called by trier.
+Sometimes,
+you want to defer
+calling a function
+until a certain
+pre-requisite condition is met.
+Other times,
+you want to
+call a function
+repeatedly
+until some post-requisite condition
+is satisfied.
+Occasionally,
+you might even want
+to do both
+for the same function.
 
-## Repeated?
+To save you writing
+explicit conditions
+and loops
+on each of those occasions,
+trier.js implements
+a predicate-based approach
+that hides the cruft
+behind a simple,
+functional interface.
 
-Repeated function invocation
-means you can specify
-some post-requisite condition
-that must be satisfied
-before trier will stop
-making calls to your function.
+Additionally,
+it allows you to easily specify
+retry intervals
+and limits,
+so that your code
+doesn't waste cycles.
+It also supports
+exponential incrementation
+of retry intervals,
+which can be useful
+when handling
+indefinite error states
+such as network failure.
 
-## Installation
+## How can I install it?
 
-### Via NPM
+You can install trier.js
+with one of
+the package managers:
+[NPM];
+[Jam];
+[Component];
+or [Bower].
+The package name
+for all of them
+is `trier`:
 
 ```
 npm install trier
-```
 
-### Via Jam
-
-```
 jam install trier
+
+component install trier
+
+bower install trier
 ```
 
-### Via Git
+Alternatively,
+you can just clone
+the git repository
+from GitHub:
 
 ```
 git clone git@github.com:philbooth/trier.js.git
 ```
 
-## Usage
+## How do I use it in my code?
 
-### Loading the library
+If you are running in
+[Node.js][node],
+[Browserify]
+or another CommonJS-style
+environment,
+you can `require`
+trier.js like so:
 
-Both
-CommonJS
-(e.g.
-if you're running on [Node.js][node]
-or if you're in the browser with [Browserify])
-and AMD
-(e.g. if you're using [Require.js][require])
-loading styles are supported.
-If neither system is detected,
-the library defaults to
-exporting it's interface globally
+```javascript
+var trier = require('trier');
+```
+
+It also the supports
+AMD-style format
+preferred by [Require.js][require]:
+
+```javascriot
+require.config({
+  paths: {
+    trier: 'trier/src/trier'
+  }
+});
+
+require([ 'trier' ], function (trier) {
+});
+```
+
+If neither environment
+is detected,
+trier.js will export its interface globally
 as `trier`.
 
-### Calling the library
+trier.js exports
+a single public function,
+`attempt`,
+which enables you to
+conditionally
+and repeatedly
+call functions
+without writing
+explicit `if` statements
+or loops.
 
-trier.js exports two public functions,
-`when` and `until`.
+`trier.attempt` takes one argument,
+an options object
+that supports
+the following properties:
 
-#### trier.when (options)
-
-Performs some action
-when prerequesite conditions
-are met.
-
-Accepts a single options object,
-which supports the following properties:
-
-* `predicate`: Callback function used to test precondition.
-  Should return `false` to postpone `action` or `true` to perform it.
-  Defaults to nop.
-* `action`: The function you want to call. Defaults to nop.
-* `fail`: Callback function to be invoked if `limit` tries are reached.
-  Defaults to nop.
-* `context`: Context object used when applying `predicate`, `action` and `fail`.
-  Defaults to `{}`.
-* `args`: Arguments array used when applying `predicate`, `action` and `fail`.
-  Defaults to `[]`.
-* `interval`: Retry interval in milliseconds.
-  Use negative numbers to indicate that subsequent retries should wait for twice the preceding interval
-  (i.e. exponential waits).
-  Defaults to -1000.
-* `limit`: Maximum retry count, at which point the call fails and retry iterations cease.
-  Use a negative number to indicate that call should continue indefinitely
-  (i.e. never fail).
+* `when`:
+  A callback function
+  used to test the pre-condition
+  for function invocation.
+  Until `when` returns true
+  (or a truthy value),
+  the `action` function
+  will not be called.
+  If undefined,
+  it defaults to a function
+  defined as
+  `function () { return true; }`.
+* `until`:
+  A callback function
+  used to test the post-condition
+  for terminating
+  function invocation.
+  After `until` returns true
+  (or a truthy value),
+  the `action` function
+  will no longer be called.
+  If undefined,
+  it defaults to a function
+  defined as
+  `function () { return true; }`.
+* `action`:
+  The invocation target.
+  A function
+  that will be called
+  according to the values
+  returned by
+  `when`
+  and `until`.
+  If undefined,
+  it defaults to a function
+  defined as
+  `function () {}`.
+* `fail`:
+  The error handler.
+  A function
+  that will be called
+  if `limit`
+  falsey values
+  are returned by
+  `when` or `until`.
+  If undefined,
+  it defaults to a function
+  defined as
+  `function () {}`.
+* `limit`:
+  Failure limit,
+  representing the number of times
+  that `when`
+  or `until`
+  may return a falsey value,
+  before the invocation
+  is deemed to have failed
+  and attempts
+  to call `action`
+  will cease.
+  A negative number
+  indicates that the attempt
+  should never fail,
+  instead continuing indefinitely
+  until `when`
+  and `until`
+  have returned
+  truthy values.
   Defaults to -1.
+* `interval`:
+  A number
+  representing the
+  retry interval,
+  in milliseconds.
+  Use a negative number to indicate
+  that each subsequent retry
+  should wait for twice the interval
+  from the preceding iteration
+  (i.e. exponential incrementation).
+  The default value is
+  -1000,
+  signifying that
+  the initial retry interval
+  should be one second
+  and that each subsequent retry
+  should double
+  the previous interval.
+* `context`:
+  The context object
+  (i.e. `this`)
+  on which to invoke
+  the functions
+  `when`,
+  `until`,
+  `action` and
+  `fail`.
+  Defaults to
+  an empty object.
+* `args`:
+  The arguments array
+  that will be provided
+  to the functions
+  `when`,
+  `until`,
+  `action` and
+  `fail`.
+  Defaults to
+  an empty array.
 
-Example:
+Examples:
 ```javascript
-trier.when({
-    predicate: function () {
+trier.attempt({
+    when: function () {
         return db.isConnected;
     },
     action: function () {
@@ -114,41 +259,10 @@ trier.when({
     interval: 1000,
     limit: 10
 });
-```
 
-#### trier.until (options)
-
-Performs some action repeatedly
-until postrequisite conditions
-are met.
-
-Accepts a single options object,
-which supports the following properties:
-
-* `predicate`: Callback function used to test postcondition.
-  Should return `false` to retry `action` or `true` to stop it.
-  Defaults to nop.
-* `action`: The function you want to call. Defaults to nop.
-* `fail`: Callback function to be invoked if `limit` tries are reached.
-  Defaults to nop.
-* `context`: Context object used when applying `predicate`, `action` and `fail`.
-  Defaults to `{}`.
-* `args`: Arguments array used when applying `predicate`, `action` and `fail`.
-  Defaults to `[]`.
-* `interval`: Retry interval in milliseconds.
-  Use negative numbers to indicate that subsequent retries should wait for twice the preceding interval
-  (i.e. exponential waits).
-  Defaults to -1000.
-* `limit`: Maximum retry count, at which point the call fails and retry iterations cease.
-  Use a negative number to indicate that call should continue indefinitely
-  (i.e. never fail).
-  Defaults to -1.
-
-Example:
-```javascript
 var sent = false
-trier.until({
-    predicate: function () {
+trier.attempt({
+    until: function () {
         return sent;
     },
     action: function () {
@@ -164,41 +278,45 @@ trier.until({
 });
 ```
 
-## Development
-
-### Dependencies
+## How do I set up the build environment?
 
 The build environment relies on
 Node.js,
-[NPM],
+NPM,
 [JSHint],
 [Mocha],
-[Chai] and
+[Chai],
+[spooks.js][spooks] and
 [UglifyJS].
-Assuming that you already have Node.js and NPM set up,
-you just need to run `npm install`
-to install all of the dependencies as listed in `package.json`.
-
-### Unit tests
+Assuming that you already have
+Node.js
+and NPM
+installed,
+you just need to run
+`npm install`
+to set up all of the dependencies
+as listed in `package.json`.
 
 The unit tests are in `test/trier.js`.
-You can run them with the command `npm test` or `jake test`.
-To run the tests in a web browser,
-open `test/trier.html`.
+You can run them with the command `npm test`.
 
-## License
+## What license is trier.js released under?
 
 [MIT][license]
 
 [ci-image]: https://secure.travis-ci.org/philbooth/trier.js.png?branch=master
 [ci-status]: http://travis-ci.org/#!/philbooth/trier.js
+[npm]: https://npmjs.org/
+[jam]: http://jamjs.org/
+[component]: http://component.io/
+[bower]: http://bower.io/
 [node]: http://nodejs.org/
 [browserify]: http://browserify.org/
 [require]: http://requirejs.org/
-[npm]: https://npmjs.org/
 [jshint]: https://github.com/jshint/node-jshint
 [mocha]: http://visionmedia.github.com/mocha
 [chai]: http://chaijs.com/
+[spooks]: https://github.com/philbooth/spooks.js
 [uglifyjs]: https://github.com/mishoo/UglifyJS
 [license]: https://github.com/philbooth/trier.js/blob/master/COPYING
 
