@@ -174,24 +174,28 @@ suite 'trier:', ->
         action = spooks.fn { name: 'action', log, callback: done }
         fail = spooks.fn { name: 'fail', log, callback: done }
         timestamps.push Date.now()
-        trier.when { predicate, action, fail, interval: -32, limit: 3 }
+        trier.when { predicate, action, fail, interval: -32, limit: 4 }
 
       teardown ->
         log = timestamps = predicate = action = fail = undefined
 
-      test 'four timestamps were recorded', ->
-        assert.lengthOf timestamps, 4
+      test 'five timestamps were recorded', ->
+        assert.lengthOf timestamps, 5
 
       test 'first interval is immediate', ->
         assert.isTrue timestamps[1] < timestamps[0] + 16
 
-      test 'second interval is about 100 ms', ->
+      test 'second interval is about 32 ms', ->
         assert.isTrue timestamps[2] > timestamps[1] + 16
         assert.isTrue timestamps[2] < timestamps[1] + 48
 
-      test 'third interval is about a second', ->
+      test 'third interval is about 64 ms', ->
         assert.isTrue timestamps[3] > timestamps[2] + 48
         assert.isTrue timestamps[3] < timestamps[2] + 80
+
+      test 'fourth interval is about 128 ms', ->
+        assert.isTrue timestamps[4] > timestamps[3] + 112
+        assert.isTrue timestamps[4] < timestamps[3] + 144
 
     suite 'until immediately:', ->
       log = predicate = action = fail = context = args = undefined
@@ -344,22 +348,26 @@ suite 'trier:', ->
         action = spooks.fn { name: 'action', log }
         fail = spooks.fn { name: 'fail', log, callback: done }
         timestamps.push Date.now()
-        trier.until { predicate, action, fail, interval: -32, limit: 3 }
+        trier.until { predicate, action, fail, interval: -32, limit: 4 }
 
       teardown ->
         log = timestamps = predicate = action = fail = undefined
 
-      test 'four timestamps were recorded', ->
-        assert.lengthOf timestamps, 4
+      test 'five timestamps were recorded', ->
+        assert.lengthOf timestamps, 5
 
       test 'first interval is immediate', ->
         assert.isTrue timestamps[1] < timestamps[0] + 16
 
-      test 'second interval is about 100 ms', ->
+      test 'second interval is about 32 ms', ->
         assert.isTrue timestamps[2] > timestamps[1] + 16
         assert.isTrue timestamps[2] < timestamps[1] + 48
 
-      test 'third interval is about a second', ->
+      test 'third interval is about 64 ms', ->
         assert.isTrue timestamps[3] > timestamps[2] + 48
         assert.isTrue timestamps[3] < timestamps[2] + 80
+
+      test 'fourth interval is about 128 ms', ->
+        assert.isTrue timestamps[4] > timestamps[3] + 112
+        assert.isTrue timestamps[4] < timestamps[3] + 144
 
