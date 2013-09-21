@@ -66,10 +66,10 @@ as `trier`.
 
 ### Calling the library
 
-trier.js exports two public functions,
-`when` and `until`.
+trier.js exports a single public function,
+`exec`.
 
-#### trier.when (options)
+#### trier.exec (options)
 
 Performs some action
 when prerequesite conditions
@@ -78,15 +78,19 @@ are met.
 Accepts a single options object,
 which supports the following properties:
 
-* `predicate`: Callback function used to test precondition.
+* `when`: Callback function used to test pre-condition.
   Should return `false` to postpone `action` or `true` to perform it.
-  Defaults to nop.
-* `action`: The function you want to call. Defaults to nop.
+  Defaults to `function () { return true; }`.
+* `until`: Callback function used to test post-condition.
+  Should return `false` to retry `action` or `true` to terminate it.
+  Defaults to `function () { return true; }`.
+* `action`: The function you want to call.
+  Defaults to `function () {}`.
 * `fail`: Callback function to be invoked if `limit` tries are reached.
-  Defaults to nop.
-* `context`: Context object used when applying `predicate`, `action` and `fail`.
+  Defaults to `function () {}`.
+* `context`: Context object used when applying `when`, `until`, `action` and `fail`.
   Defaults to `{}`.
-* `args`: Arguments array used when applying `predicate`, `action` and `fail`.
+* `args`: Arguments array used when applying `when`, `until`, `action` and `fail`.
   Defaults to `[]`.
 * `interval`: Retry interval in milliseconds.
   Use negative numbers to indicate that subsequent retries should wait for twice the preceding interval
@@ -97,10 +101,10 @@ which supports the following properties:
   (i.e. never fail).
   Defaults to -1.
 
-Example:
+Examples:
 ```javascript
-trier.when({
-    predicate: function () {
+trier.exec({
+    when: function () {
         return db.isConnected;
     },
     action: function () {
@@ -114,41 +118,10 @@ trier.when({
     interval: 1000,
     limit: 10
 });
-```
 
-#### trier.until (options)
-
-Performs some action repeatedly
-until postrequisite conditions
-are met.
-
-Accepts a single options object,
-which supports the following properties:
-
-* `predicate`: Callback function used to test postcondition.
-  Should return `false` to retry `action` or `true` to stop it.
-  Defaults to nop.
-* `action`: The function you want to call. Defaults to nop.
-* `fail`: Callback function to be invoked if `limit` tries are reached.
-  Defaults to nop.
-* `context`: Context object used when applying `predicate`, `action` and `fail`.
-  Defaults to `{}`.
-* `args`: Arguments array used when applying `predicate`, `action` and `fail`.
-  Defaults to `[]`.
-* `interval`: Retry interval in milliseconds.
-  Use negative numbers to indicate that subsequent retries should wait for twice the preceding interval
-  (i.e. exponential waits).
-  Defaults to -1000.
-* `limit`: Maximum retry count, at which point the call fails and retry iterations cease.
-  Use a negative number to indicate that call should continue indefinitely
-  (i.e. never fail).
-  Defaults to -1.
-
-Example:
-```javascript
 var sent = false
-trier.until({
-    predicate: function () {
+trier.exec({
+    until: function () {
         return sent;
     },
     action: function () {

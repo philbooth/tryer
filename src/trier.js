@@ -18,10 +18,10 @@
     //
     // @option when {function}    Callback used to test pre-condition. Should return
     //                            `false` to postpone `action` or `true` to perform it.
-    //                            Defaults to `function () { return true; }`
+    //                            Defaults to `function () { return true; }`.
     // @option until {function}    Callback used to test post-condition. Should return
     //                            `false` to retry `action` or `true` to terminate it.
-    //                            Defaults to `function () { return true; }`
+    //                            Defaults to `function () { return true; }`.
     // @option action {function}  The thing you want to do. Defaults to `function () {}`.
     // @option fail {function}    Callback to be invoked if `limit` tries are reached.
     //                            Defaults to `function () {}`.
