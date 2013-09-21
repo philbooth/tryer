@@ -131,9 +131,7 @@
                     return fail(options);
                 }
 
-                updateInterval(options);
-
-                return recur(iterate, options);
+                return recur(iterate, postIncrementInterval(options));
             }
 
             if (!isPreAction) {
@@ -158,14 +156,18 @@
         options.fail.apply(options.context, options.args);
     }
 
-    function updateInterval (options) {
+    function postIncrementInterval (options) {
+        var currentInterval = options.interval;
+
         if (options.interval < 0) {
             options.interval *= 2;
         }
+
+        return currentInterval;
     }
 
-    function recur (fn, options) {
-        setTimeout(fn, Math.abs(options.interval));
+    function recur (fn, interval) {
+        setTimeout(fn, Math.abs(interval));
     }
 
     function performAction (options) {
