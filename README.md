@@ -25,7 +25,7 @@ is satisfied.
 Occasionally,
 you might even want
 to do both
-for one function.
+for the same function.
 
 To save you writing
 explicit conditions
@@ -42,7 +42,7 @@ it allows you to easily specify
 retry intervals
 and limits,
 so that your code
-doesn't thrash the CPU.
+doesn't waste cycles.
 It also supports
 exponential incrementation
 of retry intervals,
@@ -97,10 +97,17 @@ trier.js like so:
 var trier = require('trier');
 ```
 
-It also supports
-AMD-style `require` statements:
+It also the supports
+AMD-style format
+preferred by [Require.js][require]:
 
 ```javascriot
+require.config({
+  paths: {
+    trier: 'trier/src/trier'
+  }
+});
+
 require([ 'trier' ], function (trier) {
 });
 ```
@@ -300,15 +307,16 @@ You can run them with the command `npm test`.
 [ci-image]: https://secure.travis-ci.org/philbooth/trier.js.png?branch=master
 [ci-status]: http://travis-ci.org/#!/philbooth/trier.js
 [npm]: https://npmjs.org/
-[jam]:
-[component]:
-[bower]:
+[jam]: http://jamjs.org/
+[component]: http://component.io/
+[bower]: http://bower.io/
 [node]: http://nodejs.org/
 [browserify]: http://browserify.org/
 [require]: http://requirejs.org/
 [jshint]: https://github.com/jshint/node-jshint
 [mocha]: http://visionmedia.github.com/mocha
 [chai]: http://chaijs.com/
+[spooks]: https://github.com/philbooth/spooks.js
 [uglifyjs]: https://github.com/mishoo/UglifyJS
 [license]: https://github.com/philbooth/trier.js/blob/master/COPYING
 
