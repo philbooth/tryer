@@ -1,0 +1,28 @@
+{
+    "name": "trier",
+    "version": "0.1.1",
+    "author": "Phil Booth <pmbooth@gmail.com>",
+    "description": "Because everyone loves a trier! Conditional and repeated task invocation for node and browser.",
+    "contributors": [
+        { "name": "Phil Booth", "email": "pmbooth@gmail.com" }
+    ],
+    "main": "./src/trier",
+    "scripts": [
+        "src/trier.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/philbooth/trier.js"
+    },
+    "keywords": [
+        "repeat",
+        "retry",
+        "predicate",
+        "conditional",
+        "invocation",
+        "ender"
+    ],
+    "ender": "noop",
+    "license": "MIT"
+}
+
