@@ -5,9 +5,27 @@
 Because everyone loves a trier!
 Conditional
 and repeated
-task invocation
+function invocation
 for node
 and browser.
+
+## Conditional?
+
+Conditional function invocation
+means you can specify
+some pre-requisite condition
+that must be satisfied
+before your function
+will be called by trier.
+
+## Repeated?
+
+Repeated function invocation
+means you can specify
+some post-requisite condition
+that must be satisfied
+before trier will stop
+making calls to your function.
 
 ## License
 
