@@ -42,7 +42,7 @@ it allows you to easily specify
 retry intervals
 and limits,
 so that your code
-doesn't waste cycles.
+doesn't waste hog the CPU.
 It also supports
 exponential incrementation
 of retry intervals,
@@ -103,9 +103,9 @@ preferred by [Require.js][require]:
 
 ```javascriot
 require.config({
-  paths: {
-    trier: 'trier/src/trier'
-  }
+    paths: {
+        trier: 'trier/src/trier'
+    }
 });
 
 require([ 'trier' ], function (trier) {
