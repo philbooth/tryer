@@ -22,18 +22,18 @@ suite 'trier:', ->
     teardown ->
       trier = undefined
 
-    test 'exec function is exported', ->
-      assert.isFunction trier.exec
+    test 'attempt function is exported', ->
+      assert.isFunction trier.attempt
 
-    test 'exec throws when options is null', ->
+    test 'attempt throws when options is null', ->
       assert.throws ->
-        trier.exec null
+        trier.attempt null
 
-    test 'exec does not throw when options is object', ->
+    test 'attempt does not throw when options is object', ->
       assert.doesNotThrow ->
-        trier.exec {}
+        trier.attempt {}
 
-    suite 'when immediately:', ->
+    suite 'when passing immediately:', ->
       log = predicate = action = fail = context = args = undefined
 
       setup (done) ->
@@ -43,7 +43,7 @@ suite 'trier:', ->
         fail = spooks.fn { name: 'fail', log, callback: done }
         context = {}
         args = [ 'foo', 'bar' ]
-        trier.exec { when: predicate, action, fail, context, args, interval: 0, limit: 3 }
+        trier.attempt { when: predicate, action, fail, context, args, interval: 0, limit: 3 }
 
       teardown ->
         log = predicate = action = fail = context = args = undefined
@@ -73,7 +73,7 @@ suite 'trier:', ->
       test 'fail was not called', ->
         assert.strictEqual log.counts.fail, 0
 
-    suite 'when fail 3:', ->
+    suite 'when failing three times:', ->
       log = predicate = action = fail = context = args = undefined
 
       setup (done) ->
@@ -83,7 +83,7 @@ suite 'trier:', ->
         fail = spooks.fn { name: 'fail', log, callback: done }
         context = {}
         args = [ 'baz' ]
-        trier.exec { when: predicate, action, fail, context, args, interval: 0, limit: 3 }
+        trier.attempt { when: predicate, action, fail, context, args, interval: 0, limit: 3 }
 
       teardown ->
         log = predicate = action = fail = context = args = undefined
@@ -125,7 +125,7 @@ suite 'trier:', ->
       test 'fail was applied to correct context', ->
         assert.strictEqual log.these.fail[0], context
 
-    suite 'when fail 5:', ->
+    suite 'when failing five times:', ->
       log = predicate = action = fail = undefined
 
       setup (done) ->
@@ -133,7 +133,7 @@ suite 'trier:', ->
         predicate = spooks.fn { name: 'predicate', log, result: false }
         action = spooks.fn { name: 'action', log, callback: done }
         fail = spooks.fn { name: 'fail', log, callback: done }
-        trier.exec { when: predicate, action, fail, interval: 0, limit: 5 }
+        trier.attempt { when: predicate, action, fail, interval: 0, limit: 5 }
 
       teardown ->
         log = predicate = action = fail = undefined
@@ -147,7 +147,7 @@ suite 'trier:', ->
       test 'fail was called once', ->
         assert.strictEqual log.counts.fail, 1
 
-    suite 'when fail exponential:', ->
+    suite 'when failing exponential:', ->
       log = timestamps = predicate = action = fail = undefined
 
       setup (done) ->
@@ -163,7 +163,7 @@ suite 'trier:', ->
         action = spooks.fn { name: 'action', log, callback: done }
         fail = spooks.fn { name: 'fail', log, callback: done }
         timestamps.push Date.now()
-        trier.exec { when: predicate, action, fail, interval: -32, limit: 4 }
+        trier.attempt { when: predicate, action, fail, interval: -32, limit: 4 }
 
       teardown ->
         log = timestamps = predicate = action = fail = undefined
@@ -186,7 +186,7 @@ suite 'trier:', ->
         assert.isTrue timestamps[4] > timestamps[3] + 112
         assert.isTrue timestamps[4] < timestamps[3] + 144
 
-    suite 'until immediately:', ->
+    suite 'until passing immediately:', ->
       log = predicate = action = fail = context = args = undefined
 
       setup (done) ->
@@ -196,7 +196,7 @@ suite 'trier:', ->
         fail = spooks.fn { name: 'fail', log, callback: done }
         context = {}
         args = [ 'foo', 'bar' ]
-        trier.exec { until: predicate, action, fail, context, args, interval: 0, limit: 3 }
+        trier.attempt { until: predicate, action, fail, context, args, interval: 0, limit: 3 }
 
       teardown ->
         log = predicate = action = fail = context = args = undefined
@@ -226,7 +226,7 @@ suite 'trier:', ->
       test 'fail was not called', ->
         assert.strictEqual log.counts.fail, 0
 
-    suite 'until fail 3:', ->
+    suite 'until failing three times:', ->
       log = predicate = action = fail = context = args = undefined
 
       setup (done) ->
@@ -236,7 +236,7 @@ suite 'trier:', ->
         fail = spooks.fn { name: 'fail', log, callback: done }
         context = {}
         args = [ 'baz' ]
-        trier.exec { until: predicate, action, fail, context, args, interval: 0, limit: 3 }
+        trier.attempt { until: predicate, action, fail, context, args, interval: 0, limit: 3 }
 
       teardown ->
         log = predicate = action = fail = context = args = undefined
@@ -299,7 +299,7 @@ suite 'trier:', ->
       test 'fail was applied to correct context', ->
         assert.strictEqual log.these.fail[0], context
 
-    suite 'until fail 5:', ->
+    suite 'until failing five times:', ->
       log = predicate = action = fail = undefined
 
       setup (done) ->
@@ -307,7 +307,7 @@ suite 'trier:', ->
         predicate = spooks.fn { name: 'predicate', log, result: false }
         action = spooks.fn { name: 'action', log }
         fail = spooks.fn { name: 'fail', log, callback: done }
-        trier.exec { until: predicate, action, fail, interval: 0, limit: 5 }
+        trier.attempt { until: predicate, action, fail, interval: 0, limit: 5 }
 
       teardown ->
         log = predicate = action = fail = undefined
@@ -321,7 +321,7 @@ suite 'trier:', ->
       test 'fail was called once', ->
         assert.strictEqual log.counts.fail, 1
 
-    suite 'until fail exponential:', ->
+    suite 'until failing exponential:', ->
       log = timestamps = predicate = action = fail = undefined
 
       setup (done) ->
@@ -337,7 +337,7 @@ suite 'trier:', ->
         action = spooks.fn { name: 'action', log }
         fail = spooks.fn { name: 'fail', log, callback: done }
         timestamps.push Date.now()
-        trier.exec { until: predicate, action, fail, interval: -32, limit: 4 }
+        trier.attempt { until: predicate, action, fail, interval: -32, limit: 4 }
 
       teardown ->
         log = timestamps = predicate = action = fail = undefined

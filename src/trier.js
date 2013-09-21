@@ -6,12 +6,12 @@
     'use strict';
 
     var functions = {
-        exec: exec
+        attempt: attempt
     };
 
     exportFunctions();
 
-    // Public function `exec`.
+    // Public function `attempt`.
     //
     // Performs some action when pre-requisite conditions are met and/or until
     // post-requisite conditions are satisfied.
@@ -39,7 +39,7 @@
     //                            indefinitely (i.e. never fail). Defaults to -1.
     //
     // @example
-    //     trier.exec({
+    //     trier.attempt({
     //         when: function () {
     //             return db.isConnected;
     //         },
@@ -57,7 +57,7 @@
     //
     // @example
     //     var sent = false
-    //     trier.exec({
+    //     trier.attempt({
     //         until: function () {
     //             return sent;
     //         },
@@ -72,7 +72,7 @@
     //         interval: -1000,
     //         limit: -1
     //     });
-    function exec (options) {
+    function attempt (options) {
         options = normaliseOptions(options);
 
         iterate();
