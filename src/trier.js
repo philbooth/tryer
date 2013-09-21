@@ -6,39 +6,41 @@
     'use strict';
 
     var functions = {
-        when: when,
-        until: until
+        exec: exec
     };
 
     exportFunctions();
 
-    // Public function `when`.
+    // Public function `exec`.
     //
-    // Performs some action when prerequisite conditions are met.
+    // Performs some action when pre-requisite conditions are met and/or until
+    // post-requisite conditions are satisfied.
     //
-    // @option predicate {function} Callback used to test precondition. Should
-    //                              return `false` to postpone `action` or `true`
-    //                              to perform it. Defaults to nop.
-    // @option action {function}    The thing you want to do. Defaults to nop.
-    // @option fail {function}      Callback to be invoked if `limit` tries are
-    //                              reached. Defaults to nop.
-    // @option context {object}     Context object used when applying `predicate`,
-    //                              `action` and `fail`. Defaults to `{}`.
-    // @option args {array}         Arguments array used when applying `predicate`,
-    //                              `action` and `fail`. Defaults to `[]`.
-    // @option interval {number}    Retry interval in milliseconds. Use negative
-    //                              numbers to indicate that subsequent retries
-    //                              should wait for double the interval than the
-    //                              preceding iteration (i.e. exponential waits).
-    //                              Defaults to -1000.
-    // @option limit {number}       Maximum retry count, at which point the call
-    //                              fails and retry iterations cease. Use a negative
-    //                              number to indicate that call should continue
-    //                              indefinitely (i.e. never fail). Defaults to -1.
+    // @option when {function}    Callback used to test pre-condition. Should return
+    //                            `false` to postpone `action` or `true` to perform it.
+    //                            Defaults to `function () { return true; }`
+    // @option until {function}    Callback used to test post-condition. Should return
+    //                            `false` to retry `action` or `true` to terminate it.
+    //                            Defaults to `function () { return true; }`
+    // @option action {function}  The thing you want to do. Defaults to `function () {}`.
+    // @option fail {function}    Callback to be invoked if `limit` tries are reached.
+    //                            Defaults to `function () {}`.
+    // @option context {object}   Context object used when applying `when`, `until`,
+    //                            `action` and `fail`. Defaults to `{}`.
+    // @option args {array}       Arguments array used when applying `when`, `until`,
+    //                            `action` and `fail`. Defaults to `[]`.
+    // @option interval {number}  Retry interval in milliseconds. Use negative numbers to
+    //                            indicate that subsequent retries should wait for double
+    //                            the interval from the preceding iteration (exponential
+    //                            waits). Defaults to -1000.
+    // @option limit {number}     Maximum retry count, at which point the call fails and
+    //                            retry iterations cease. Use a negative
+    //                            number to indicate that call should continue
+    //                            indefinitely (i.e. never fail). Defaults to -1.
     //
     // @example
-    //     trier.when({
-    //         predicate: function () {
+    //     trier.exec({
+    //         when: function () {
     //             return db.isConnected;
     //         },
     //         action: function () {
@@ -52,15 +54,59 @@
     //         interval: 1000,
     //         limit: 10
     //     });
-    function when (options) {
-        conditionallyPerformActionOrRecur(false, normaliseOptions(options));
+    //
+    // @example
+    //     var sent = false
+    //     trier.exec({
+    //         until: function () {
+    //             return sent;
+    //         },
+    //         action: function () {
+    //             smtp.send(email, function (error) {
+    //                 if (!error) {
+    //                     sent = true;
+    //                     next();
+    //                 }
+    //             });
+    //         },
+    //         interval: -1000,
+    //         limit: -1
+    //     });
+    function exec (options) {
+        options = normaliseOptions(options);
+
+        iterate();
+
+        function iterate () {
+            if (conditionallyRecur('when')) {
+                performAction(options);
+                conditionallyRecur('until');
+            }
+        }
+
+        function conditionallyRecur (predicateKey) {
+            if (shouldRetry(options, predicateKey)) {
+                incrementCount(options);
+
+                if (shouldFail(options)) {
+                    fail(options);
+                }  else {
+                    recur(iterate, postIncrementInterval(options));
+                }
+
+                return false;
+            }
+
+            return true;
+        }
     }
 
     function normaliseOptions (options) {
         return {
             count: 0,
+            when: normalisePredicate(options.when),
+            until: normalisePredicate(options.until),
             action: normaliseFunction(options.action),
-            predicate: normaliseFunction(options.predicate),
             fail: normaliseFunction(options.fail),
             interval: normaliseNumber(options.interval, -1000),
             limit: normaliseNumber(options.limit, -1),
@@ -69,12 +115,20 @@
         };
     }
 
-    function normaliseFunction (fn) {
-        return normalise(fn, isFunction, nop);
+    function normalisePredicate (fn) {
+        return normalise(fn, isFunction, yes);
     }
 
     function isFunction (fn) {
         return typeof fn === 'function';
+    }
+
+    function yes () {
+        return true;
+    }
+
+    function normaliseFunction (fn) {
+        return normalise(fn, isFunction, nop);
     }
 
     function nop () {
@@ -116,32 +170,8 @@
         return normalise(array, isArray, []);
     }
 
-    function conditionallyPerformActionOrRecur (isPreAction, options) {
-        iterate();
-
-        function iterate () {
-            if (isPreAction) {
-                performAction(options);
-            }
-
-            if (shouldRetry(options)) {
-                incrementCount(options);
-
-                if (shouldFail(options)) {
-                    return fail(options);
-                }
-
-                return recur(iterate, postIncrementInterval(options));
-            }
-
-            if (!isPreAction) {
-                performAction(options);
-            }
-        }
-    }
-
-    function shouldRetry (options) {
-        return !options.predicate.apply(options.context, options.args);
+    function shouldRetry (options, predicateKey) {
+        return !options[predicateKey].apply(options.context, options.args);
     }
 
     function incrementCount (options) {
@@ -172,51 +202,6 @@
 
     function performAction (options) {
         options.action.apply(options.context, options.args);
-    }
-
-    // Public function `until`.
-    //
-    // Performs some action repeatedly until postrequisite conditions are met.
-    //
-    // @option predicate {function} Callback used to test postcondition. Should
-    //                              return `false` to retry `action` or `true`
-    //                              to stop it. Defaults to nop.
-    // @option action {function}    The thing you want to do. Defaults to nop.
-    // @option fail {function}      Callback to be invoked if `limit` tries are
-    //                              reached. Defaults to nop.
-    // @option context {object}     Context object used when applying `predicate`,
-    //                              `action` and `fail`. Defaults to `{}`.
-    // @option args {array}         Arguments array used when applying `predicate`,
-    //                              `action` and `fail`. Defaults to `[]`.
-    // @option interval {number}    Retry interval in milliseconds. Use negative
-    //                              numbers to indicate that subsequent retries
-    //                              should wait for double the interval than the
-    //                              preceding iteration (i.e. exponential waits).
-    //                              Defaults to -1000.
-    // @option limit {number}       Maximum retry count, at which point the call
-    //                              fails and retry iterations cease. Use a negative
-    //                              number to indicate that call should continue
-    //                              indefinitely (i.e. never fail). Defaults to -1.
-    //
-    // @example
-    //     var sent = false
-    //     trier.until({
-    //         predicate: function () {
-    //             return sent;
-    //         },
-    //         action: function () {
-    //             smtp.send(email, function (error) {
-    //                 if (!error) {
-    //                     sent = true;
-    //                     next();
-    //                 }
-    //             });
-    //         },
-    //         interval: -1000,
-    //         limit: -1
-    //     });
-    function until (options) {
-        conditionallyPerformActionOrRecur(true, normaliseOptions(options));
     }
 
     function exportFunctions () {
