@@ -27,12 +27,13 @@
         "jshint": "2.1.x",
         "mocha": "1.13.x",
         "chai": "1.7.x",
-        "uglify-js": "2.4.x"
+        "uglify-js": "2.4.x",
+        "coffee-script": "1.6.x"
     },
     "license": "MIT",
     "scripts": {
         "lint": "./node_modules/.bin/jshint ./src/trier.js --config config/jshint.json",
-        "test": "./node_modules/.bin/mocha --ui tdd --reporter spec --colors ./test/trier.js",
+        "test": "./node_modules/.bin/mocha --ui tdd --reporter spec --compilers coffee:coffee-script --colors ./test/trier.coffee",
         "minify": "./node_modules/.bin/uglifyjs ./src/trier.js --compress --mangle --output ./lib/trier.min.js"
     }
 }

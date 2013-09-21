@@ -134,7 +134,7 @@
                     return fail(options);
                 }
 
-                updateInterval();
+                updateInterval(options);
 
                 return recur(iterate, options);
             }
