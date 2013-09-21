@@ -27,10 +27,6 @@ that must be satisfied
 before trier will stop
 making calls to your function.
 
-## License
-
-[MIT][license]
-
 ## Installation
 
 ### Via NPM
@@ -190,9 +186,12 @@ You can run them with the command `npm test` or `jake test`.
 To run the tests in a web browser,
 open `test/trier.html`.
 
+## License
+
+[MIT][license]
+
 [ci-image]: https://secure.travis-ci.org/philbooth/trier.js.png?branch=master
 [ci-status]: http://travis-ci.org/#!/philbooth/trier.js
-[license]: https://github.com/philbooth/trier.js/blob/master/COPYING
 [node]: http://nodejs.org/
 [browserify]: http://browserify.org/
 [require]: http://requirejs.org/
@@ -201,4 +200,5 @@ open `test/trier.html`.
 [mocha]: http://visionmedia.github.com/mocha
 [chai]: http://chaijs.com/
 [uglifyjs]: https://github.com/mishoo/UglifyJS
+[license]: https://github.com/philbooth/trier.js/blob/master/COPYING
 
