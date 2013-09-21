@@ -58,18 +58,20 @@ with one of
 the package managers:
 [NPM];
 [Jam];
-[Component];
-or [Bower].
+[Bower];
+or [Component].
 The package name
-for all of them
-is `trier`:
+for the first three
+is `trier`
+and for Component
+it's `philbooth/trier.js`:
 
 ```
 npm install trier
 
 jam install trier
 
-component install trier
+component install philbooth/trier.js
 
 bower install trier
 ```
