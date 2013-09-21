@@ -91,13 +91,11 @@ trier.when({
     },
     action: function () {
         db.insert(user);
+        next();
     },
     fail: function () {
         log.error('No database connection, terminating.');
         process.exit(1);
-    },
-    pass: function () {
-        next();
     },
     interval: 1000,
     limit: 10
@@ -143,11 +141,9 @@ trier.until({
         smtp.send(email, function (error) {
             if (!error) {
                 sent = true;
+                next();
             }
         });
-    },
-    pass: function () {
-        next();
     },
     interval: -1000,
     limit: -1

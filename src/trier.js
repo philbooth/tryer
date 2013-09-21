@@ -43,19 +43,17 @@
     //         },
     //         action: function () {
     //             db.insert(user);
+    //             next();
     //         },
     //         fail: function () {
     //             log.error('No database connection, terminating.');
     //             process.exit(1);
     //         },
-    //         pass: function () {
-    //             next();
-    //         },
     //         interval: 1000,
     //         limit: 10
     //     });
     function when (options) {
-        conditionallyPerformActionOrRecur(true, normaliseOptions(options));
+        conditionallyPerformActionOrRecur(false, normaliseOptions(options));
     }
 
     function normaliseOptions (options) {
@@ -64,7 +62,6 @@
             action: normaliseFunction(options.action),
             predicate: normaliseFunction(options.predicate),
             fail: normaliseFunction(options.fail),
-            pass: normaliseFunction(options.pass),
             interval: normaliseNumber(options.interval, -1000),
             limit: normaliseNumber(options.limit, -1),
             context: normaliseObject(options.context),
@@ -119,11 +116,11 @@
         return normalise(array, isArray, []);
     }
 
-    function conditionallyPerformActionOrRecur (isActionPostPredicate, options) {
+    function conditionallyPerformActionOrRecur (isPreAction, options) {
         iterate();
 
         function iterate () {
-            if (!isActionPostPredicate) {
+            if (isPreAction) {
                 performAction(options);
             }
 
@@ -139,7 +136,7 @@
                 return recur(iterate, options);
             }
 
-            if (isActionPostPredicate) {
+            if (!isPreAction) {
                 performAction(options);
             }
         }
@@ -209,17 +206,15 @@
     //             smtp.send(email, function (error) {
     //                 if (!error) {
     //                     sent = true;
+    //                     next();
     //                 }
     //             });
-    //         },
-    //         pass: function () {
-    //             next();
     //         },
     //         interval: -1000,
     //         limit: -1
     //     });
     function until (options) {
-        conditionallyPerformActionOrRecur(false, normaliseOptions(options));
+        conditionallyPerformActionOrRecur(true, normaliseOptions(options));
     }
 
     function exportFunctions () {
