@@ -42,7 +42,7 @@ it allows you to easily specify
 retry intervals
 and limits,
 so that your code
-doesn't waste hog the CPU.
+doesn't hog the CPU.
 It also supports
 exponential incrementation
 of retry intervals,
