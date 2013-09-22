@@ -360,3 +360,35 @@ suite 'trier:', ->
         assert.isTrue timestamps[4] > timestamps[3] + 112
         assert.isTrue timestamps[4] < timestamps[3] + 144
 
+    suite 'asyncrhonous action:', ->
+      log = timestamps = predicate = action = fail = undefined
+
+      setup (done) ->
+        log = {}
+        timestamps = []
+        predicate = ->
+          timestamps.push Date.now()
+          false
+        action = (trierDone) ->
+          setTimeout trierDone, 64
+        timestamps.push Date.now()
+        trier.attempt { until: predicate, action, fail: done, interval: 0, limit: 3 }
+
+      teardown ->
+        log = timestamps = predicate = action = fail = undefined
+
+      test 'four timestamps were recorded', ->
+        assert.lengthOf timestamps, 4
+
+      test 'first interval is about 64 ms', ->
+        assert.isTrue timestamps[1] > timestamps[0] + 48
+        assert.isTrue timestamps[1] < timestamps[0] + 80
+
+      test 'second interval is about 64 ms', ->
+        assert.isTrue timestamps[2] > timestamps[1] + 48
+        assert.isTrue timestamps[2] < timestamps[1] + 80
+
+      test 'third interval is about 64 ms', ->
+        assert.isTrue timestamps[3] > timestamps[2] + 48
+        assert.isTrue timestamps[3] < timestamps[2] + 80
+
