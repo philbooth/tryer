@@ -23,6 +23,10 @@
     //                            `false` to retry `action` or `true` to terminate it.
     //                            Defaults to `function () { return true; }`.
     // @option action {function}  The thing you want to do. Defaults to `function () {}`.
+    //                            If your implementation of `action` expects any arguments,
+    //                            it will be treated as asynchronous and passed an extra
+    //                            function parameter, `done`. You must call `done` when
+    //                            the action is finished.
     // @option fail {function}    Callback to be invoked if `limit` tries are reached.
     //                            Defaults to `function () {}`.
     // @option context {object}   Context object used when applying `when`, `until`,
@@ -45,7 +49,6 @@
     //         },
     //         action: function () {
     //             db.insert(user);
-    //             next();
     //         },
     //         fail: function () {
     //             log.error('No database connection, terminating.');
@@ -61,12 +64,12 @@
     //         until: function () {
     //             return sent;
     //         },
-    //         action: function () {
+    //         action: function (done) {
     //             smtp.send(email, function (error) {
     //                 if (!error) {
     //                     sent = true;
-    //                     next();
     //                 }
+    //                 done();
     //             });
     //         },
     //         interval: -1000,
@@ -79,8 +82,14 @@
 
         function iterate () {
             if (conditionallyRecur('when')) {
-                performAction(options);
-                conditionallyRecur('until');
+                if (isActionSynchronous(options)) {
+                    performAction(options);
+                    return conditionallyRecur('until');
+                }
+
+                performAction(options, function () {
+                    conditionallyRecur('until');
+                });
             }
         }
 
@@ -170,6 +179,10 @@
         return normalise(array, isArray, []);
     }
 
+    function isActionSynchronous (options) {
+        return options.action.length === 0;
+    }
+
     function shouldRetry (options, predicateKey) {
         return !options[predicateKey].apply(options.context, options.args);
     }
@@ -200,8 +213,8 @@
         setTimeout(fn, Math.abs(interval));
     }
 
-    function performAction (options) {
-        options.action.apply(options.context, options.args);
+    function performAction (options, done) {
+        options.action.apply(options.context, done ? options.args.concat(done) : options.args);
     }
 
     function exportFunctions () {

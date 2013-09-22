@@ -172,6 +172,17 @@ the following properties:
   it defaults to a function
   defined as
   `function () {}`.
+  If your implementation
+  of `action`
+  expects any arguments,
+  it will be treated
+  as asynchronous
+  and passed
+  an additional function parameter,
+  `done`.
+  You must call `done`
+  when the action
+  is finished.
 * `fail`:
   The error handler.
   A function
@@ -246,13 +257,16 @@ the following properties:
 
 Examples:
 ```javascript
+// Attempt to insert a database record, waiting until a
+// connection is available before doing so. The retry
+// interval is 1 second on each occasion and the call
+// will fail after 10 attempts.
 trier.attempt({
     when: function () {
         return db.isConnected;
     },
     action: function () {
-        db.insert(user);
-        next();
+        db.insert(record);
     },
     fail: function () {
         log.error('No database connection, terminating.');
@@ -262,17 +276,20 @@ trier.attempt({
     limit: 10
 });
 
+// Attempt to send email message, optionally retrying with
+// exponentially increasing intervals starting at 1 second.
+// Continue to make attempts until the call succeeds.
 var sent = false
 trier.attempt({
     until: function () {
         return sent;
     },
-    action: function () {
+    action: function (done) {
         smtp.send(email, function (error) {
             if (!error) {
                 sent = true;
-                next();
             }
+            done();
         });
     },
     interval: -1000,
