@@ -34,19 +34,20 @@ suite 'trier:', ->
         trier.attempt {}
 
     suite 'when passing immediately:', ->
-      log = predicate = action = fail = context = args = undefined
+      log = predicate = action = fail = pass = context = args = undefined
 
       setup (done) ->
         log = {}
         predicate = spooks.fn { name: 'predicate', log, result: true }
-        action = spooks.fn { name: 'action', log, callback: done }
+        action = spooks.fn { name: 'action', log }
         fail = spooks.fn { name: 'fail', log, callback: done }
+        pass = spooks.fn { name: 'pass', log, callback: done }
         context = {}
         args = [ 'foo', 'bar' ]
-        trier.attempt { when: predicate, action, fail, context, args, interval: 0, limit: 3 }
+        trier.attempt { when: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
 
       teardown ->
-        log = predicate = action = fail = context = args = undefined
+        log = predicate = action = fail = pass = context = args = undefined
 
       test 'predicate was called once', ->
         assert.strictEqual log.counts.predicate, 1
@@ -73,20 +74,32 @@ suite 'trier:', ->
       test 'fail was not called', ->
         assert.strictEqual log.counts.fail, 0
 
+      test 'pass was called once', ->
+        assert.strictEqual log.counts.pass, 1
+
+      test 'pass was passed correct arguments', ->
+        assert.lengthOf log.args.pass[0], 2
+        assert.strictEqual log.args.pass[0][0], 'foo'
+        assert.strictEqual log.args.pass[0][1], 'bar'
+
+      test 'pass was applied to correct context', ->
+        assert.strictEqual log.these.pass[0], context
+
     suite 'when failing three times:', ->
-      log = predicate = action = fail = context = args = undefined
+      log = predicate = action = fail = pass = context = args = undefined
 
       setup (done) ->
         log = {}
         predicate = spooks.fn { name: 'predicate', log, result: false }
-        action = spooks.fn { name: 'action', log, callback: done }
+        action = spooks.fn { name: 'action', log }
         fail = spooks.fn { name: 'fail', log, callback: done }
+        pass = spooks.fn { name: 'pass', log, callback: done }
         context = {}
         args = [ 'baz' ]
-        trier.attempt { when: predicate, action, fail, context, args, interval: 0, limit: 3 }
+        trier.attempt { when: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
 
       teardown ->
-        log = predicate = action = fail = context = args = undefined
+        log = predicate = action = fail = pass = context = args = undefined
 
       test 'predicate was called three times', ->
         assert.strictEqual log.counts.predicate, 3
@@ -124,6 +137,9 @@ suite 'trier:', ->
 
       test 'fail was applied to correct context', ->
         assert.strictEqual log.these.fail[0], context
+
+      test 'pass was not called', ->
+        assert.strictEqual log.counts.pass, 0
 
     suite 'when failing five times:', ->
       log = predicate = action = fail = undefined
@@ -187,19 +203,20 @@ suite 'trier:', ->
         assert.isTrue timestamps[4] < timestamps[3] + 144
 
     suite 'until passing immediately:', ->
-      log = predicate = action = fail = context = args = undefined
+      log = predicate = action = fail = pass = context = args = undefined
 
       setup (done) ->
         log = {}
-        predicate = spooks.fn { name: 'predicate', log, result: true, callback: done }
+        predicate = spooks.fn { name: 'predicate', log, result: true }
         action = spooks.fn { name: 'action', log }
         fail = spooks.fn { name: 'fail', log, callback: done }
+        pass = spooks.fn { name: 'pass', log, callback: done }
         context = {}
         args = [ 'foo', 'bar' ]
-        trier.attempt { until: predicate, action, fail, context, args, interval: 0, limit: 3 }
+        trier.attempt { until: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
 
       teardown ->
-        log = predicate = action = fail = context = args = undefined
+        log = predicate = action = fail = pass = context = args = undefined
 
       test 'predicate was called once', ->
         assert.strictEqual log.counts.predicate, 1
@@ -226,20 +243,43 @@ suite 'trier:', ->
       test 'fail was not called', ->
         assert.strictEqual log.counts.fail, 0
 
+      test 'pass was called once', ->
+        assert.strictEqual log.counts.pass, 1
+
+      test 'pass was passed correct arguments', ->
+        assert.lengthOf log.args.pass[0], 2
+        assert.strictEqual log.args.pass[0][0], 'foo'
+        assert.strictEqual log.args.pass[0][1], 'bar'
+
+      test 'pass was applied to correct context', ->
+        assert.strictEqual log.these.pass[0], context
+
+      test 'pass was called once', ->
+        assert.strictEqual log.counts.pass, 1
+
+      test 'pass was passed correct arguments', ->
+        assert.lengthOf log.args.pass[0], 2
+        assert.strictEqual log.args.pass[0][0], 'foo'
+        assert.strictEqual log.args.pass[0][1], 'bar'
+
+      test 'pass was applied to correct context', ->
+        assert.strictEqual log.these.pass[0], context
+
     suite 'until failing three times:', ->
-      log = predicate = action = fail = context = args = undefined
+      log = predicate = action = fail = pass = context = args = undefined
 
       setup (done) ->
         log = {}
         predicate = spooks.fn { name: 'predicate', log, result: false }
         action = spooks.fn { name: 'action', log }
         fail = spooks.fn { name: 'fail', log, callback: done }
+        pass = spooks.fn { name: 'pass', log, callback: done }
         context = {}
         args = [ 'baz' ]
-        trier.attempt { until: predicate, action, fail, context, args, interval: 0, limit: 3 }
+        trier.attempt { until: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
 
       teardown ->
-        log = predicate = action = fail = context = args = undefined
+        log = predicate = action = fail = pass = context = args = undefined
 
       test 'predicate was called three times', ->
         assert.strictEqual log.counts.predicate, 3
@@ -298,6 +338,9 @@ suite 'trier:', ->
 
       test 'fail was applied to correct context', ->
         assert.strictEqual log.these.fail[0], context
+
+      test 'pass was not called', ->
+        assert.strictEqual log.counts.pass, 0
 
     suite 'until failing five times:', ->
       log = predicate = action = fail = undefined

@@ -29,10 +29,12 @@
     //                            the action is finished.
     // @option fail {function}    Callback to be invoked if `limit` tries are reached.
     //                            Defaults to `function () {}`.
+    // @option pass {function}    Callback to be invoked after `until` has returned truthily.
+    //                            Defaults to `function () {}`.
     // @option context {object}   Context object used when applying `when`, `until`,
-    //                            `action` and `fail`. Defaults to `{}`.
+    //                            `action`, `fail` and `pass`. Defaults to `{}`.
     // @option args {array}       Arguments array used when applying `when`, `until`,
-    //                            `action` and `fail`. Defaults to `[]`.
+    //                            `action`, `fail` and `pass`. Defaults to `[]`.
     // @option interval {number}  Retry interval in milliseconds. Use negative numbers to
     //                            indicate that subsequent retries should wait for double
     //                            the interval from the preceding iteration (exponential
@@ -72,6 +74,9 @@
     //                 done();
     //             });
     //         },
+    //         pass: function () {
+    //             next();
+    //         },
     //         interval: -1000,
     //         limit: -1
     //     });
@@ -81,16 +86,20 @@
         iterate();
 
         function iterate () {
-            if (conditionallyRecur('when')) {
+            if (preRecur()) {
                 if (isActionSynchronous(options)) {
                     performAction(options);
-                    return conditionallyRecur('until');
+                    return postRecur();
                 }
 
                 performAction(options, function () {
-                    conditionallyRecur('until');
+                    postRecur();
                 });
             }
+        }
+
+        function preRecur () {
+            return conditionallyRecur('when');
         }
 
         function conditionallyRecur (predicateKey) {
@@ -108,6 +117,12 @@
 
             return true;
         }
+
+        function postRecur () {
+            if (conditionallyRecur('until')) {
+                pass(options);
+            }
+        }
     }
 
     function normaliseOptions (options) {
@@ -117,6 +132,7 @@
             until: normalisePredicate(options.until),
             action: normaliseFunction(options.action),
             fail: normaliseFunction(options.fail),
+            pass: normaliseFunction(options.pass),
             interval: normaliseNumber(options.interval, -1000),
             limit: normaliseNumber(options.limit, -1),
             context: normaliseObject(options.context),
@@ -215,6 +231,10 @@
 
     function performAction (options, done) {
         options.action.apply(options.context, done ? options.args.concat(done) : options.args);
+    }
+
+    function pass (options) {
+        options.pass.apply(options.context, options.args);
     }
 
     function exportFunctions () {
