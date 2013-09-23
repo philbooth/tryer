@@ -100,10 +100,10 @@ var trier = require('trier');
 ```
 
 It also the supports
-AMD-style format
+the AMD-style format
 preferred by [Require.js][require]:
 
-```javascriot
+```javascript
 require.config({
     paths: {
         trier: 'trier/src/trier'
@@ -114,12 +114,17 @@ require([ 'trier' ], function (trier) {
 });
 ```
 
-If neither environment
-is detected,
-trier.js will export its interface globally
+If you are
+including trier.js
+with an HTML `<script>` tag,
+or neither of the above environments
+are detected,
+trier.js will just export its interface globally
 as `trier`.
 
-trier.js exports
+trier.js
+has no dependencies
+and exports
 a single public function,
 `attempt`,
 which enables you to
@@ -303,6 +308,7 @@ The build environment relies on
 Node.js,
 NPM,
 [JSHint],
+[CoffeeScript],
 [Mocha],
 [Chai],
 [spooks.js][spooks] and
@@ -316,7 +322,7 @@ you just need to run
 to set up all of the dependencies
 as listed in `package.json`.
 
-The unit tests are in `test/trier.js`.
+The unit tests are in `test/trier.coffee`.
 You can run them with the command `npm test`.
 
 ## What license is trier.js released under?
@@ -333,6 +339,7 @@ You can run them with the command `npm test`.
 [browserify]: http://browserify.org/
 [require]: http://requirejs.org/
 [jshint]: https://github.com/jshint/node-jshint
+[coffeescript]: http://coffeescript.org/
 [mocha]: http://visionmedia.github.com/mocha
 [chai]: http://chaijs.com/
 [spooks]: https://github.com/philbooth/spooks.js
