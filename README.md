@@ -200,6 +200,17 @@ the following properties:
   it defaults to a function
   defined as
   `function () {}`.
+* `pass`:
+  Success handler.
+  A function
+  that will be called
+  after `until`
+  has returned
+  truthily.
+  If undefined,
+  it defaults to a function
+  defined as
+  `function () {}`.
 * `limit`:
   Failure limit,
   representing the number of times
