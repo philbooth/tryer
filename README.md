@@ -71,9 +71,9 @@ npm install trier
 
 jam install trier
 
-component install philbooth/trier.js
-
 bower install trier
+
+component install philbooth/trier.js
 ```
 
 Alternatively,
