@@ -403,7 +403,176 @@ suite 'trier:', ->
         assert.isTrue timestamps[4] > timestamps[3] + 112
         assert.isTrue timestamps[4] < timestamps[3] + 144
 
-    suite 'asyncrhonous action:', ->
+    suite 'when passing immediately and until failing five times:', ->
+      log = predicateWhen = predicateUntil = action = fail = undefined
+
+      setup (done) ->
+        log = {}
+        predicateWhen = spooks.fn { name: 'predicateWhen', log, result: true }
+        predicateUntil = spooks.fn { name: 'predicateUntil', log, result: false }
+        action = spooks.fn { name: 'action', log }
+        fail = spooks.fn { name: 'fail', log, callback: done }
+        trier.attempt { when: predicateWhen, until: predicateUntil, action, fail, interval: 0, limit: 5 }
+
+      teardown ->
+        log = predicateWhen = predicateUntil = action = fail = undefined
+
+      test 'when predicate was called five times', ->
+        assert.strictEqual log.counts.predicateWhen, 5
+
+      test 'until predicate was called five times', ->
+        assert.strictEqual log.counts.predicateUntil, 5
+
+      test 'action was called five times', ->
+        assert.strictEqual log.counts.action, 5
+
+      test 'fail was called once', ->
+        assert.strictEqual log.counts.fail, 1
+
+    suite 'when failing five times and until passing immediately:', ->
+      log = predicateWhen = predicateUntil = action = fail = undefined
+
+      setup (done) ->
+        log = {}
+        predicateWhen = spooks.fn { name: 'predicateWhen', log, result: false }
+        predicateUntil = spooks.fn { name: 'predicateUntil', log, result: true }
+        action = spooks.fn { name: 'action', log }
+        fail = spooks.fn { name: 'fail', log, callback: done }
+        trier.attempt { when: predicateWhen, until: predicateUntil, action, fail, interval: 0, limit: 5 }
+
+      teardown ->
+        log = predicateWhen = predicateUntil = action = fail = undefined
+
+      test 'when predicate was called five times', ->
+        assert.strictEqual log.counts.predicateWhen, 5
+
+      test 'until predicate was never called', ->
+        assert.strictEqual log.counts.predicateUntil, 0
+
+      test 'action was never called', ->
+        assert.strictEqual log.counts.action, 0
+
+      test 'fail was called once', ->
+        assert.strictEqual log.counts.fail, 1
+
+    suite 'when passing immediately and until failing exponential:', ->
+      log = timestamps = predicateWhen = predicateUntil = action = fail = undefined
+
+      setup (done) ->
+        log = {}
+        timestamps = { predicateWhen: [], predicateUntil: [] }
+        predicateWhen = spooks.fn {
+          name: 'predicateWhen',
+          log,
+          result: true,
+          callback: ->
+            timestamps.predicateWhen.push Date.now()
+        }
+        predicateUntil = spooks.fn {
+          name: 'predicateUntil',
+          log,
+          result: false,
+          callback: ->
+            timestamps.predicateUntil.push Date.now()
+        }
+        action = spooks.fn { name: 'action', log }
+        fail = spooks.fn { name: 'fail', log, callback: done }
+        now = Date.now()
+        timestamps.predicateWhen.push now
+        timestamps.predicateUntil.push now
+        trier.attempt { when: predicateWhen, until: predicateUntil, action, fail, interval: -32, limit: 4 }
+
+      teardown ->
+        log = predicateWhen = predicateUntil = action = fail = undefined
+
+      test 'five timestamps were recorded for when', ->
+        assert.lengthOf timestamps.predicateWhen, 5
+
+      test 'five timestamps were recorded for until', ->
+        assert.lengthOf timestamps.predicateUntil, 5
+
+      test 'first when interval is immediate', ->
+        assert.isTrue timestamps.predicateWhen[1] < timestamps.predicateWhen[0] + 16
+
+      test 'first until interval is immediate', ->
+        assert.isTrue timestamps.predicateUntil[1] < timestamps.predicateUntil[0] + 16
+
+      test 'second when interval is about 32 ms', ->
+        assert.isTrue timestamps.predicateWhen[2] > timestamps.predicateWhen[1] + 16
+        assert.isTrue timestamps.predicateWhen[2] < timestamps.predicateWhen[1] + 48
+
+      test 'second until interval is about 32 ms', ->
+        assert.isTrue timestamps.predicateUntil[2] > timestamps.predicateUntil[1] + 16
+        assert.isTrue timestamps.predicateUntil[2] < timestamps.predicateUntil[1] + 48
+
+      test 'third when interval is about 64 ms', ->
+        assert.isTrue timestamps.predicateWhen[3] > timestamps.predicateWhen[2] + 48
+        assert.isTrue timestamps.predicateWhen[3] < timestamps.predicateWhen[2] + 80
+
+      test 'third until interval is about 64 ms', ->
+        assert.isTrue timestamps.predicateUntil[3] > timestamps.predicateUntil[2] + 48
+        assert.isTrue timestamps.predicateUntil[3] < timestamps.predicateUntil[2] + 80
+
+      test 'fourth when interval is about 128 ms', ->
+        assert.isTrue timestamps.predicateWhen[4] > timestamps.predicateWhen[3] + 112
+        assert.isTrue timestamps.predicateWhen[4] < timestamps.predicateWhen[3] + 144
+
+      test 'fourth until interval is about 128 ms', ->
+        assert.isTrue timestamps.predicateUntil[4] > timestamps.predicateUntil[3] + 112
+        assert.isTrue timestamps.predicateUntil[4] < timestamps.predicateUntil[3] + 144
+
+    suite 'when failing exponential and until passing immediately:', ->
+      log = timestamps = predicateWhen = predicateUntil = action = fail = undefined
+
+      setup (done) ->
+        log = {}
+        timestamps = { predicateWhen: [], predicateUntil: [] }
+        predicateWhen = spooks.fn {
+          name: 'predicateWhen',
+          log,
+          result: false,
+          callback: ->
+            timestamps.predicateWhen.push Date.now()
+        }
+        predicateUntil = spooks.fn {
+          name: 'predicateUntil',
+          log,
+          result: true,
+          callback: ->
+            timestamps.predicateUntil.push Date.now()
+        }
+        action = spooks.fn { name: 'action', log }
+        fail = spooks.fn { name: 'fail', log, callback: done }
+        now = Date.now()
+        timestamps.predicateWhen.push now
+        timestamps.predicateUntil.push now
+        trier.attempt { when: predicateWhen, until: predicateUntil, action, fail, interval: -32, limit: 4 }
+
+      teardown ->
+        log = timestamps = predicateWhen = predicateUntil = action = fail = undefined
+
+      test 'five timestamps were recorded for when', ->
+        assert.lengthOf timestamps.predicateWhen, 5
+
+      test 'one timestamp was recorded for until', ->
+        assert.lengthOf timestamps.predicateUntil, 1
+
+      test 'first when interval is immediate', ->
+        assert.isTrue timestamps.predicateWhen[1] < timestamps.predicateWhen[0] + 16
+
+      test 'second when interval is about 32 ms', ->
+        assert.isTrue timestamps.predicateWhen[2] > timestamps.predicateWhen[1] + 16
+        assert.isTrue timestamps.predicateWhen[2] < timestamps.predicateWhen[1] + 48
+
+      test 'third when interval is about 64 ms', ->
+        assert.isTrue timestamps.predicateWhen[3] > timestamps.predicateWhen[2] + 48
+        assert.isTrue timestamps.predicateWhen[3] < timestamps.predicateWhen[2] + 80
+
+      test 'fourth when interval is about 128 ms', ->
+        assert.isTrue timestamps.predicateWhen[4] > timestamps.predicateWhen[3] + 112
+        assert.isTrue timestamps.predicateWhen[4] < timestamps.predicateWhen[3] + 144
+
+    suite 'asynchronous action:', ->
       log = timestamps = predicate = action = fail = undefined
 
       setup (done) ->
