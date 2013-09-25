@@ -163,7 +163,7 @@ suite 'trier:', ->
       test 'fail was called once', ->
         assert.strictEqual log.counts.fail, 1
 
-    suite 'when failing exponential:', ->
+    suite 'when failing exponentially:', ->
       log = timestamps = predicate = action = fail = undefined
 
       setup (done) ->
@@ -364,7 +364,7 @@ suite 'trier:', ->
       test 'fail was called once', ->
         assert.strictEqual log.counts.fail, 1
 
-    suite 'until failing exponential:', ->
+    suite 'until failing exponentially:', ->
       log = timestamps = predicate = action = fail = undefined
 
       setup (done) ->
@@ -433,10 +433,10 @@ suite 'trier:', ->
       test 'when was called twice', ->
         assert.strictEqual log.counts.when, 2
 
-      test 'action was called twice', ->
+      test 'action was called three times', ->
         assert.strictEqual log.counts.action, 3
 
-      test 'until was called twice', ->
+      test 'until was called three times', ->
         assert.strictEqual log.counts.until, 3
 
       test 'fail was not called', ->
