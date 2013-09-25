@@ -83,26 +83,19 @@
     function attempt (options) {
         options = normaliseOptions(options);
 
-        iterate();
+        iterateWhen();
 
-        function iterate () {
+        function iterateWhen () {
             if (preRecur()) {
-                if (isActionSynchronous(options)) {
-                    performAction(options);
-                    return postRecur();
-                }
-
-                performAction(options, function () {
-                    postRecur();
-                });
+                iterateUntil();
             }
         }
 
         function preRecur () {
-            return conditionallyRecur('when');
+            return conditionallyRecur('when', iterateWhen);
         }
 
-        function conditionallyRecur (predicateKey) {
+        function conditionallyRecur (predicateKey, iterate) {
             if (shouldRetry(options, predicateKey)) {
                 incrementCount(options);
 
@@ -118,8 +111,19 @@
             return true;
         }
 
+        function iterateUntil () {
+            if (isActionSynchronous(options)) {
+                performAction(options);
+                return postRecur();
+            }
+
+            performAction(options, function () {
+                postRecur();
+            });
+        }
+
         function postRecur () {
-            if (conditionallyRecur('until')) {
+            if (conditionallyRecur('until', iterateUntil)) {
                 pass(options);
             }
         }
