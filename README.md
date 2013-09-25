@@ -215,7 +215,7 @@ the following properties:
   Failure limit,
   representing the number of times
   that `when`
-  or `until`
+  and `until`
   may return a falsey value,
   before the invocation
   is deemed to have failed
@@ -256,8 +256,9 @@ the following properties:
   the functions
   `when`,
   `until`,
-  `action` and
-  `fail`.
+  `action`,
+  `fail` and
+  `pass`.
   Defaults to
   an empty object.
 * `args`:
@@ -265,9 +266,9 @@ the following properties:
   that will be provided
   to the functions
   `when`,
-  `until`,
-  `action` and
-  `fail`.
+  `action`,
+  `fail` and
+  `pass`.
   Defaults to
   an empty array.
 
@@ -292,7 +293,7 @@ trier.attempt({
     limit: 10
 });
 
-// Attempt to send email message, optionally retrying with
+// Attempt to send an email message, optionally retrying with
 // exponentially increasing intervals starting at 1 second.
 // Continue to make attempts until the call succeeds.
 var sent = false
