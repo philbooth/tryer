@@ -404,13 +404,10 @@ suite 'trier:', ->
         assert.isTrue timestamps[4] < timestamps[3] + 144
 
     suite 'when failing once then passing and until failing twice then passing', ->
-      log = predicateReturns = predicateLoggers = predicates = action = fail = pass = undefined
+      log = predicateLoggers = predicates = action = fail = pass = undefined
 
       setup (done) ->
         log = {}
-        predicateReturns =
-          when: false
-          until: false
         predicateLoggers =
           when: spooks.fn { name: 'when', log }
           until: spooks.fn { name: 'until', log }
@@ -431,7 +428,7 @@ suite 'trier:', ->
         trier.attempt { when: predicates.when, until: predicates.until, action, fail, pass, interval: 0, limit: 4 }
 
       teardown ->
-        log = predicateReturns = predicateLoggers = predicates = action = fail = pass = undefined
+        log = predicateLoggers = predicates = action = fail = pass = undefined
 
       test 'when was called twice', ->
         assert.strictEqual log.counts.when, 2
