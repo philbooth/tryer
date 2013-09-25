@@ -4,7 +4,8 @@
     "author": "Phil Booth <pmbooth@gmail.com>",
     "description": "Because everyone loves a trier! Conditional and repeated task invocation for node and browser.",
     "contributors": [
-        { "name": "Phil Booth", "email": "pmbooth@gmail.com" }
+        { "name": "Phil Booth", "email": "pmbooth@gmail.com" },
+        { "name": "Andrew Lawson" }
     ],
     "main": "./src/trier",
     "repository": {
