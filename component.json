@@ -1,6 +1,6 @@
 {
   "name": "trier",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "author": "Phil Booth <pmbooth@gmail.com>",
   "description": "Because everyone loves a trier! Conditional and repeated task invocation for node and browser.",
   "contributors": [
