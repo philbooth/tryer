@@ -117,9 +117,7 @@
                 return postRecur();
             }
 
-            performAction(options, function () {
-                postRecur();
-            });
+            performAction(options, postRecur);
         }
 
         function postRecur () {
