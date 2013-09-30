@@ -106,7 +106,7 @@ preferred by [Require.js][require]:
 ```javascript
 require.config({
     paths: {
-        trier: 'trier/src/trier'
+        trier: 'trier.js/src/trier'
     }
 });
 
