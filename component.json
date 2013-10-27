@@ -1,32 +1,17 @@
 {
   "name": "trier",
   "version": "0.3.4",
-  "author": "Phil Booth <pmbooth@gmail.com>",
   "description": "Because everyone loves a trier! Conditional and repeated task invocation for node and browser.",
-  "contributors": [
-    { "name": "Phil Booth", "email": "pmbooth@gmail.com" },
-    { "name": "Andrew Lawson" }
-  ],
-  "main": "./src/trier",
-  "scripts": [
-    "src/trier.js"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/philbooth/trier.js"
-  },
-  "keywords": [
-    "repeat",
-    "retry",
-    "predicate",
-    "conditional",
-    "invocation",
-    "ender"
-  ],
-  "ender": "noop",
+  "repo": "philbooth/trier.js",
   "license": "MIT",
-  "remotes": [],
-  "dependencies": {
-    "philbooth/trier.js": "*"
-  }
+  "keywords": [
+      "repeat",
+      "retry",
+      "predicate",
+      "conditional",
+      "invocation"
+  ],
+  "scripts": [
+      "src/trier.min.js"
+  ]
 }
