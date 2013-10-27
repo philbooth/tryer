@@ -1,0 +1,16 @@
+{
+    "name": "trier",
+    "version": "0.3.4",
+    "main": "lib/trier.min.js",
+    "ignore": {
+        "AUTHORS",
+        "component.json",
+        "config",
+        "node_modules",
+        "package.json",
+        "README.md",
+        "src",
+        "test"
+    }
+}
+
