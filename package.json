@@ -1,16 +1,15 @@
 {
     "name": "trier",
     "version": "0.3.4",
-    "author": "Phil Booth <pmbooth@gmail.com>",
     "description": "Because everyone loves a trier! Conditional and repeated task invocation for node and browser.",
-    "contributors": [
-        { "name": "Phil Booth", "email": "pmbooth@gmail.com" },
-        { "name": "Andrew Lawson" }
-    ],
+    "homepage": "https://github.com/philbooth/trier.js",
+    "bugs": "https://github.com/philbooth/trier.js/issues",
+    "license": "MIT",
+    "author": "Phil Booth <pmbooth@gmail.com> (https://github.com/philbooth)",
     "main": "./src/trier",
     "repository": {
         "type": "git",
-        "url": "https://github.com/philbooth/trier.js"
+        "url": "https://github.com/philbooth/trier.js.git"
     },
     "keywords": [
         "repeat",
@@ -20,19 +19,14 @@
         "invocation",
         "ender"
     ],
-    "ender": "noop",
-    "jam": {
-        "main": "src/trier.js"
-    },
     "devDependencies": {
-        "jshint": "2.1.x",
+        "jshint": "2.2.x",
         "coffee-script": "1.6.x",
         "mocha": "1.13.x",
-        "chai": "1.7.x",
+        "chai": "1.8.x",
         "spooks": "0.5.x",
         "uglify-js": "2.4.x"
     },
-    "license": "MIT",
     "scripts": {
         "lint": "./node_modules/.bin/jshint ./src/trier.js --config config/jshint.json",
         "test": "./node_modules/.bin/mocha --ui tdd --reporter spec --compilers coffee:coffee-script --colors ./test/trier.coffee",
