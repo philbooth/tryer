@@ -16,8 +16,7 @@
         "retry",
         "predicate",
         "conditional",
-        "invocation",
-        "ender"
+        "invocation"
     ],
     "devDependencies": {
         "jshint": "2.2.x",
