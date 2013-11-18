@@ -2,7 +2,7 @@
     "name": "trier",
     "version": "0.3.5",
     "main": "lib/trier.min.js",
-    "ignore": {
+    "ignore": [
         "AUTHORS",
         "component.json",
         "config",
@@ -11,6 +11,6 @@
         "README.md",
         "src",
         "test"
-    }
+    ]
 }
 
