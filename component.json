@@ -1,6 +1,6 @@
 {
   "name": "trier",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Because everyone loves a trier! Conditional and repeated task invocation for node and browser.",
   "repo": "philbooth/trier.js",
   "license": "MIT",
