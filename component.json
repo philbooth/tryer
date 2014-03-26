@@ -4,6 +4,7 @@
   "description": "Because everyone loves a trier! Conditional and repeated task invocation for node and browser.",
   "repo": "philbooth/trier.js",
   "license": "MIT",
+  "main": "src/trier.js",
   "keywords": [
       "repeat",
       "retry",
@@ -12,6 +13,6 @@
       "invocation"
   ],
   "scripts": [
-      "src/trier.min.js"
+      "src/trier.js"
   ]
 }
