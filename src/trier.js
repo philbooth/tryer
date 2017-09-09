@@ -198,7 +198,7 @@
   }
 
   function shouldRetry (options, predicateKey) {
-    return !options[predicateKey].apply(options.context, options.args);
+    return ! options[predicateKey].apply(options.context, options.args);
   }
 
   function incrementCount (options) {
