@@ -1,6 +1,6 @@
 {
   "name": "tryer",
-  "version": "0.3.6",
+  "version": "1.0.0",
   "description": "Because everyone loves a tryer! Conditional and repeated task invocation for node and browser.",
   "homepage": "https://github.com/philbooth/tryer",
   "bugs": "https://github.com/philbooth/tryer/issues",
