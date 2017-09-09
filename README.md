@@ -12,6 +12,7 @@ for node
 and browser.
 
 * [Say what?](#say-what)
+* [What size is it?](#what-size-is-it)
 * [How do I install it?](#how-do-i-install-it)
 * [How do I use it?](#how-do-i-use-it)
   * [Loading the library](#loading-the-library)
@@ -61,6 +62,10 @@ which can be useful
 when handling
 indefinite error states
 such as network failure.
+
+## What size is it?
+
+5.6 kb unminified with comments, 1.1 kb minified, 0.5 kb minified + gzipped.
 
 ## How do I install it?
 
