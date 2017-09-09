@@ -1,4 +1,4 @@
-/*globals chai, spooks, require, tryer, suite, setup, test, setTimeout */
+/*globals chai, spooks, require, tryer, suite, setup, test, setTimeout, Promise */
 
 (function (require, spooks) {
   'use strict';
@@ -438,7 +438,7 @@
             };
             action = function () {
               return new Promise(function (resolve) {
-                setTimeout(resolve, 10)
+                setTimeout(resolve, 10);
               });
             };
             timestamps.push(Date.now());
@@ -477,7 +477,7 @@
             };
             action = function () {
               return new Promise(function (_, reject) {
-                setTimeout(reject, 10)
+                setTimeout(reject, 10);
               });
             };
             timestamps.push(Date.now());

@@ -133,7 +133,7 @@
   }
 
   function normaliseOptions (options) {
-    options = options || {}
+    options = options || {};
     return {
       count: 0,
       when: normalisePredicate(options.when),
@@ -165,7 +165,7 @@
   function nop () {
   }
 
-  function normalise(thing, predicate, defaultValue) {
+  function normalise (thing, predicate, defaultValue) {
     if (predicate(thing)) {
       return thing;
     }
@@ -179,26 +179,6 @@
 
   function isNumber (number) {
     return typeof number === 'number' && number === number;
-  }
-
-  function normaliseObject (object) {
-    return normalise(object, isObject, {});
-  }
-
-  function isObject (object) {
-    return typeof object === 'object' && object !== null && isArray(object) === false;
-  }
-
-  function isArray (array) {
-    if (Array.isArray) {
-      return Array.isArray(array);
-    }
-
-    return Object.prototype.toString.call(array) === '[object Array]';
-  }
-
-  function normaliseArray (array) {
-    return normalise(array, isArray, []);
   }
 
   function isActionSynchronous (options) {
