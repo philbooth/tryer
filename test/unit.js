@@ -231,7 +231,7 @@
           action = spooks.fn({ name: 'action', log: log, callback: done });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           timestamps.push(Date.now());
-          trier({ when: predicate, action: action, fail: fail, interval: -32, limit: 4 });
+          trier({ when: predicate, action: action, fail: fail, interval: -10, limit: 4 });
         });
   
         test('five timestamps were recorded', function () {
@@ -239,22 +239,22 @@
         });
   
         test('first interval is immediate', function () {
-          assert.isTrue(timestamps[1] < timestamps[0] + 16);
+          assert.isTrue(timestamps[1] < timestamps[0] + 5);
         });
   
-        test('second interval is about 32 ms', function () {
-          assert.isTrue(timestamps[2] > timestamps[1] + 16);
-          assert.isTrue(timestamps[2] < timestamps[1] + 48);
+        test('second interval is about 10 ms', function () {
+          assert.isTrue(timestamps[2] >= timestamps[1] + 10);
+          assert.isTrue(timestamps[2] < timestamps[1] + 15);
         });
   
-        test('third interval is about 64 ms', function () {
-          assert.isTrue(timestamps[3] > timestamps[2] + 48);
-          assert.isTrue(timestamps[3] < timestamps[2] + 80);
+        test('third interval is about 20 ms', function () {
+          assert.isTrue(timestamps[3] >= timestamps[2] + 20);
+          assert.isTrue(timestamps[3] < timestamps[2] + 30);
         });
   
-        test('fourth interval is about 128 ms', function () {
-          assert.isTrue(timestamps[4] > timestamps[3] + 112);
-          assert.isTrue(timestamps[4] < timestamps[3] + 144);
+        test('fourth interval is about 40 ms', function () {
+          assert.isTrue(timestamps[4] >= timestamps[3] + 40);
+          assert.isTrue(timestamps[4] < timestamps[3] + 50);
         });
       });
   
@@ -486,7 +486,7 @@
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           timestamps.push(Date.now());
-          trier({ until: predicate, action: action, fail: fail, interval: -32, limit: 4 });
+          trier({ until: predicate, action: action, fail: fail, interval: -10, limit: 4 });
         });
   
         test('five timestamps were recorded', function () {
@@ -494,22 +494,22 @@
         });
   
         test('first interval is immediate', function () {
-          assert.isTrue(timestamps[1] < timestamps[0] + 16);
+          assert.isTrue(timestamps[1] < timestamps[0] + 5);
         });
   
-        test('second interval is about 32 ms', function () {
-          assert.isTrue(timestamps[2] > timestamps[1] + 16);
-          assert.isTrue(timestamps[2] < timestamps[1] + 48);
+        test('second interval is about 10 ms', function () {
+          assert.isTrue(timestamps[2] >= timestamps[1] + 10);
+          assert.isTrue(timestamps[2] < timestamps[1] + 20);
         });
   
-        test('third interval is about 64 ms', function () {
-          assert.isTrue(timestamps[3] > timestamps[2] + 48);
-          assert.isTrue(timestamps[3] < timestamps[2] + 80);
+        test('third interval is about 20 ms', function () {
+          assert.isTrue(timestamps[3] >= timestamps[2] + 20);
+          assert.isTrue(timestamps[3] < timestamps[2] + 30);
         });
   
-        test('fourth interval is about 128 ms', function () {
-          assert.isTrue(timestamps[4] > timestamps[3] + 112);
-          assert.isTrue(timestamps[4] < timestamps[3] + 144);
+        test('fourth interval is about 40 ms', function () {
+          assert.isTrue(timestamps[4] >= timestamps[3] + 40);
+          assert.isTrue(timestamps[4] < timestamps[3] + 50);
         });
       });
   
@@ -584,7 +584,7 @@
             return false;
           };
           action = function (trierDone) {
-            setTimeout(trierDone, 64);
+            setTimeout(trierDone, 10);
           };
           timestamps.push(Date.now());
           trier({ until: predicate, action: action, fail: done, interval: 0, limit: 3 });
@@ -594,19 +594,19 @@
           assert.lengthOf(timestamps, 4);
         });
   
-        test('first interval is about 64 ms', function () {
-          assert.isTrue(timestamps[1] > timestamps[0] + 48);
-          assert.isTrue(timestamps[1] < timestamps[0] + 80);
+        test('first interval is about 10 ms', function () {
+          assert.isTrue(timestamps[1] >= timestamps[0] + 10);
+          assert.isTrue(timestamps[1] < timestamps[0] + 20);
         });
   
-        test('second interval is about 64 ms', function () {
-          assert.isTrue(timestamps[2] > timestamps[1] + 48);
-          assert.isTrue(timestamps[2] < timestamps[1] + 80);
+        test('second interval is about 10 ms', function () {
+          assert.isTrue(timestamps[2] >= timestamps[1] + 10);
+          assert.isTrue(timestamps[2] < timestamps[1] + 20);
         });
   
-        test('third interval is about 64 ms', function () {
-          assert.isTrue(timestamps[3] > timestamps[2] + 48);
-          assert.isTrue(timestamps[3] < timestamps[2] + 80);
+        test('third interval is about 10 ms', function () {
+          assert.isTrue(timestamps[3] >= timestamps[2] + 10);
+          assert.isTrue(timestamps[3] < timestamps[2] + 20);
         });
       });
     });
