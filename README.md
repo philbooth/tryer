@@ -1,13 +1,24 @@
-# trier.js
+# tryer
 
-[![Build status][ci-image]][ci-status]
+[![Package status](https://img.shields.io/npm/v/tryer.svg?style=flat-square)](https://www.npmjs.com/package/tryer)
+[![Build status](https://img.shields.io/travis/philbooth/tryer.svg?style=flat-square)](https://travis-ci.org/philbooth/tryer)
+[![License](https://img.shields.io/github/license/philbooth/tryer.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
-Because everyone loves a trier!
+Because everyone loves a tryer!
 Conditional
 and repeated
 function invocation
 for node
 and browser.
+
+* [Say what?](#say-what)
+* [How do I install it?](#how-do-i-install-it)
+* [How do I use it?](#how-do-i-use-it)
+  * [Loading the library](#loading-the-library)
+  * [Calling the exported function](#calling-the-exported-function)
+  * [Examples](#examples)
+* [How do I set up the dev environment?](#how-do-i-set-up-the-dev-environment)
+* [What license is it released under?](#what-license-is-it-released-under)
 
 ## Say what?
 
@@ -31,7 +42,7 @@ To save you writing
 explicit conditions
 and loops
 on each of those occasions,
-trier.js implements
+`tryer` implements
 a predicate-based approach
 that hides the cruft
 behind a simple,
@@ -44,317 +55,244 @@ and limits,
 so that your code
 doesn't hog the CPU.
 It also supports
-exponential incrementation
+exponential backoff
 of retry intervals,
 which can be useful
 when handling
 indefinite error states
 such as network failure.
 
-## How can I install it?
+## How do I install it?
 
-You can install trier.js
-with one of
-the package managers:
-[NPM];
-[Jam];
-[Bower];
-or [Component].
-The package name
-for the first three
-is `trier`
-and for Component
-it's `philbooth/trier.js`:
+Via npm:
 
 ```
-npm install trier
-
-jam install trier
-
-bower install trier
-
-component install philbooth/trier.js
+npm i tryer --save
 ```
 
-Alternatively,
-you can just clone
-the git repository
-from GitHub:
+Or if you just want the git repo:
 
 ```
-git clone git@github.com:philbooth/trier.js.git
+git clone git@github.com:philbooth/tryer.git
 ```
 
-## How do I use it in my code?
+## How do I use it?
+
+### Loading the library
 
 If you are running in
-[Node.js][node],
-[Browserify]
+Node.js
 or another CommonJS-style
 environment,
 you can `require`
-trier.js like so:
+tryer like so:
 
 ```javascript
-var trier = require('trier');
+const tryer = require('tryer');
 ```
 
 It also the supports
 the AMD-style format
-preferred by [Require.js][require]:
-
-```javascript
-require.config({
-    paths: {
-        trier: 'trier.js/src/trier'
-    }
-});
-
-require([ 'trier' ], function (trier) {
-});
-```
+preferred by Require.js.
 
 If you are
-including trier.js
+including `tryer`
 with an HTML `<script>` tag,
 or neither of the above environments
 are detected,
-trier.js will just export its interface globally
-as `trier`.
+it will be exported globally as `tryer`.
 
-trier.js
-has no dependencies
-and exports
-a single public function,
-`attempt`,
-which enables you to
-conditionally
-and repeatedly
-call functions
-without writing
+### Calling the exported function
+
+`tryer` is a function
+that can be invoked to
+call other functions
+conditionally and repeatedly,
+without the need for
 explicit `if` statements
-or loops.
+or loops in your own code.
 
-`trier.attempt` takes one argument,
+`tryer` takes one argument,
 an options object
 that supports
 the following properties:
 
+* `action`:
+  The function that you want to invoke.
+  If your implementation of `action`
+  expects arguments,
+  it will be treated as asynchronous
+  and passed an additional function parameter, `done`.
+  In that case,
+  you must call `done`
+  when the action is finished.
+  If `action` is not set,
+  it defaults to an empty function.
+
 * `when`:
-  A callback function
-  used to test the pre-condition
-  for function invocation.
+  A predicate
+  that tests the pre-condition
+  for invoking `action`.
   Until `when` returns true
   (or a truthy value),
-  the `action` function
-  will not be called.
-  If undefined,
-  it defaults to a function
-  defined as
-  `function () { return true; }`.
+  `action` will not be called.
+  Defaults to
+  a function that immediately returns `true`.
+
 * `until`:
-  A callback function
-  used to test the post-condition
-  for terminating
-  function invocation.
+  A predicate
+  that tests the post-condition
+  for invoking `action`.
   After `until` returns true
   (or a truthy value),
-  the `action` function
-  will no longer be called.
-  If undefined,
-  it defaults to a function
-  defined as
-  `function () { return true; }`.
-* `action`:
-  The invocation target.
-  A function
-  that will be called
-  according to the values
-  returned by
-  `when`
-  and `until`.
-  If undefined,
-  it defaults to a function
-  defined as
-  `function () {}`.
-  If your implementation
-  of `action`
-  expects any arguments,
-  it will be treated
-  as asynchronous
-  and passed
-  an additional function parameter,
-  `done`.
-  You must call `done`
-  when the action
-  is finished.
+  `action` will no longer be called.
+  Defaults to
+  a function that immediately returns `true`.
+
 * `fail`:
   The error handler.
   A function
   that will be called
-  if `limit`
-  falsey values
-  are returned by
-  `when` or `until`.
-  If undefined,
-  it defaults to a function
-  defined as
-  `function () {}`.
+  if `limit` falsey values
+  are returned by `when` or `until`.
+  Defaults to an empty function.
+
 * `pass`:
   Success handler.
   A function
   that will be called
-  after `until`
-  has returned
-  truthily.
-  If undefined,
-  it defaults to a function
-  defined as
-  `function () {}`.
+  after `until` has returned truthily.
+  Defaults to an empty function.
+
 * `limit`:
   Failure limit,
-  representing the number of times
-  that `when`
-  and `until`
-  may return a falsey value,
-  before the invocation
-  is deemed to have failed
-  and attempts
-  to call `action`
-  will cease.
+  representing the maximum number
+  of falsey returns from `when` or `until`
+  that will be permitted
+  before invocation is deemed to have failed.
   A negative number
   indicates that the attempt
   should never fail,
-  instead continuing indefinitely
-  until `when`
-  and `until`
-  have returned
-  truthy values.
-  Defaults to -1.
+  instead continuing 
+  for as long as `when` and `until`
+  have returned truthy values.
+  Defaults to `-1`.
+
 * `interval`:
-  A number
-  representing the
-  retry interval,
+  The retry interval,
   in milliseconds.
-  Use a negative number to indicate
+  A negative number indicates
   that each subsequent retry
   should wait for twice the interval
   from the preceding iteration
-  (i.e. exponential incrementation).
-  The default value is
-  -1000,
+  (i.e. exponential backoff).
+  The default value is `-1000`,
   signifying that
   the initial retry interval
   should be one second
-  and that each subsequent retry
-  should double
-  the previous interval.
+  and that each subsequent attempt
+  should wait for double the length
+  of the previous interval.
+
 * `context`:
   The context object
   (i.e. `this`)
   on which to invoke
-  the functions
-  `when`,
-  `until`,
-  `action`,
-  `fail` and
-  `pass`.
-  Defaults to
-  an empty object.
+  `action`, `when`, `until`, `fail` and `pass`.
+  Defaults to an empty object.
+
 * `args`:
   The arguments array
   that will be provided
   to the functions
-  `when`,
-  `action`,
-  `fail` and
-  `pass`.
-  Defaults to
-  an empty array.
+  `action`, `when`, `until`, `fail` and `pass`.
+  Defaults to an empty array.
 
-Examples:
+### Examples
+
 ```javascript
-// Attempt to insert a database record, waiting until a
-// connection is available before doing so. The retry
-// interval is 1 second on each occasion and the call
-// will fail after 10 attempts.
-trier.attempt({
-    when: function () {
-        return db.isConnected;
-    },
-    action: function () {
-        db.insert(record);
-    },
-    fail: function () {
-        log.error('No database connection, terminating.');
-        process.exit(1);
-    },
-    interval: 1000,
-    limit: 10
-});
-
-// Attempt to send an email message, optionally retrying with
-// exponentially increasing intervals starting at 1 second.
-// Continue to make attempts until the call succeeds.
-var sent = false
-trier.attempt({
-    until: function () {
-        return sent;
-    },
-    action: function (done) {
-        smtp.send(email, function (error) {
-            if (!error) {
-                sent = true;
-            }
-            done();
-        });
-    },
-    interval: -1000,
-    limit: -1
+// Attempt to insert a database record, waiting until `db.isConnected`
+// before doing so. The retry interval is 1 second on each iteration
+// and the call will fail after 10 attempts.
+tryer({
+  action: () => db.insert(record),
+  when: () => db.isConnected,
+  interval: 1000,
+  limit: 10,
+  fail () {
+    log.error('No database connection, terminating.');
+    process.exit(1);
+  }
 });
 ```
 
-## How do I set up the build environment?
+```javascript
+// Attempt to send an email message, optionally retrying with
+// exponential backoff starting at 1 second. Continue to make
+// attempts indefinitely until the call succeeds.
+let sent = false;
+tryer({
+  action (done) {
+    smtp.send(email, error => {
+      if (! error) {
+        sent = true;
+      }
+      done();
+    });
+  },
+  until: () => sent,
+  interval: -1000,
+  limit: -1
+});
+```
 
-The build environment relies on
-Node.js,
-NPM,
-[JSHint],
-[CoffeeScript],
-[Mocha],
+## How do I set up the dev environment?
+
+The dev environment relies on
 [Chai],
-[spooks.js][spooks] and
+[JSHint],
+[Mocha],
+[please-release-me],
+[spooks.js] and
 [UglifyJS].
-Assuming that you already have
-Node.js
-and NPM
-installed,
-you just need to run
-`npm install`
-to set up all of the dependencies
-as listed in `package.json`.
+The source code is in
+`src/tryer.js`
+and the unit tests are in
+`test/unit.js`.
 
-The unit tests are in `test/trier.coffee`.
-You can run them with the command `npm test`.
+To install the dependencies:
 
-## What license is trier.js released under?
+```
+npm i
+```
 
-[MIT][license]
+To run the tests:
 
-[ci-image]: https://secure.travis-ci.org/philbooth/trier.js.png?branch=master
-[ci-status]: http://travis-ci.org/#!/philbooth/trier.js
-[npm]: https://npmjs.org/
-[jam]: http://jamjs.org/
-[component]: http://component.io/
-[bower]: http://bower.io/
-[node]: http://nodejs.org/
-[browserify]: http://browserify.org/
-[require]: http://requirejs.org/
-[jshint]: https://github.com/jshint/node-jshint
-[coffeescript]: http://coffeescript.org/
-[mocha]: http://visionmedia.github.com/mocha
+```
+npm t
+```
+
+To lint the code:
+
+```
+npm run lint
+```
+
+To regenerate the minified lib:
+
+```
+npm run minify
+```
+
+## What license is it released under?
+
+[MIT](COPYING)
+
 [chai]: http://chaijs.com/
-[spooks]: https://github.com/philbooth/spooks.js
-[uglifyjs]: https://github.com/mishoo/UglifyJS
-[license]: https://github.com/philbooth/trier.js/blob/master/COPYING
+[jshint]: http://jshint.com/
+[mocha]: http://mochajs.org/
+[please-release-me]: https://github.com/philbooth/please-release-me
+[spooks.js]: https://github.com/philbooth/spooks.js
+[uglifyjs]: http://lisperator.net/uglifyjs/
+[license]: COPYING
 
