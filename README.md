@@ -194,20 +194,6 @@ the following properties:
   should wait for double the length
   of the previous interval.
 
-* `context`:
-  The context object
-  (i.e. `this`)
-  on which to invoke
-  `action`, `when`, `until`, `fail` and `pass`.
-  Defaults to an empty object.
-
-* `args`:
-  The arguments array
-  that will be provided
-  to the functions
-  `action`, `when`, `until`, `fail` and `pass`.
-  Defaults to an empty array.
-
 ### Examples
 
 ```javascript

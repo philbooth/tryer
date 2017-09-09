@@ -20,33 +20,34 @@
   // Performs some action when pre-requisite conditions are met and/or until
   // post-requisite conditions are satisfied.
   //
-  // @option when {function}   Callback used to test pre-condition. Should return
-  //                           `false` to postpone `action` or `true` to perform it.
-  //                           Defaults to `function () { return true; }`.
-  // @option until {function}  Callback used to test post-condition. Should return
-  //                           `false` to retry `action` or `true` to terminate it.
-  //                           Defaults to `function () { return true; }`.
-  // @option action {function} The thing you want to do. Defaults to `function () {}`.
-  //                           If your implementation of `action` expects any arguments,
-  //                           it will be treated as asynchronous and passed an extra
-  //                           function parameter, `done`. You must call `done` when
-  //                           the action is finished.
-  // @option fail {function}   Callback to be invoked if `limit` tries are reached.
-  //                           Defaults to `function () {}`.
+  // @option action {function} The function that you want to invoke. Defaults to `() => {}`.
+  //                           If your implementation of `action` expects any arguments, it
+  //                           will be treated as asynchronous and passed an extra parameter,
+  //                           `done`. In that case, you must call `done` when the action is
+  //                           finished.
+  //
+  // @option when {function}   Predicate used to test pre-conditions. Should return `false`
+  //                           to postpone `action` or `true` to perform it. Defaults to
+  //                           `() => true`.
+  //
+  // @option until {function}  Predicate used to test post-conditions. Should return `false`
+  //                           to retry `action` or `true` to terminate it. Defaults to
+  //                           `() => true`.
+  //
+  // @option fail {function}   Callback to be invoked if `limit` tries are reached. Defaults
+  //                           to `() => {}`.
+  //
   // @option pass {function}   Callback to be invoked after `until` has returned truthily.
-  //                           Defaults to `function () {}`.
-  // @option context {object}  Context object used when applying `when`, `until`,
-  //                           `action`, `fail` and `pass`. Defaults to `{}`.
-  // @option args {array}      Arguments array used when applying `when`, `until`,
-  //                           `action`, `fail` and `pass`. Defaults to `[]`.
-  // @option interval {number} Retry interval in milliseconds. Use negative numbers to
-  //                           indicate that subsequent retries should wait for double
-  //                           the interval from the preceding iteration (exponential
-  //                           waits). Defaults to -1000.
-  // @option limit {number}    Maximum retry count, at which point the call fails and
-  //                           retry iterations cease. Use a negative
-  //                           number to indicate that call should continue
-  //                           indefinitely (i.e. never fail). Defaults to -1.
+  //                           Defaults to `() => {}`.
+  //
+  // @option interval {number} Retry interval in milliseconds. A negative number indicates
+  //                           that subsequent retries should wait for double the interval
+  //                           from the preceding iteration (exponential backoff). Defaults
+  //                           to -1000.
+  //
+  // @option limit {number}    Maximum retry count, at which point the call fails and retries
+  //                           will cease. A negative number indicates that retries should
+  //                           continue indefinitely. Defaults to -1.
   //
   // @example
   //   tryer({
@@ -92,11 +93,11 @@
     }
 
     function conditionallyRecur (predicateKey, iterate) {
-      if (shouldRetry(options, predicateKey)) {
+      if (! options[predicateKey]()) {
         incrementCount(options);
 
         if (shouldFail(options)) {
-          fail(options);
+          options.fail();
         }  else {
           recur(iterate, postIncrementInterval(options));
         }
@@ -109,16 +110,16 @@
 
     function iterateUntil () {
       if (isActionSynchronous(options)) {
-        performAction(options);
+        options.action();
         return postRecur();
       }
 
-      performAction(options, postRecur);
+      options.action(postRecur);
     }
 
     function postRecur () {
       if (conditionallyRecur('until', iterateUntil)) {
-        pass(options);
+        options.pass();
       }
     }
   }
@@ -133,9 +134,7 @@
       fail: normaliseFunction(options.fail),
       pass: normaliseFunction(options.pass),
       interval: normaliseNumber(options.interval, -1000),
-      limit: normaliseNumber(options.limit, -1),
-      context: normaliseObject(options.context),
-      args: normaliseArray(options.args)
+      limit: normaliseNumber(options.limit, -1)
     };
   }
 
@@ -198,20 +197,12 @@
     return options.action.length === 0;
   }
 
-  function shouldRetry (options, predicateKey) {
-    return ! options[predicateKey].apply(options.context, options.args);
-  }
-
   function incrementCount (options) {
     options.count += 1;
   }
 
   function shouldFail (options) {
     return options.limit >= 0 && options.count >= options.limit;
-  }
-
-  function fail (options) {
-    options.fail.apply(options.context, options.args);
   }
 
   function postIncrementInterval (options) {
@@ -226,14 +217,6 @@
 
   function recur (fn, interval) {
     setTimeout(fn, Math.abs(interval));
-  }
-
-  function performAction (options, done) {
-    options.action.apply(options.context, done ? options.args.concat(done) : options.args);
-  }
-
-  function pass (options) {
-    options.pass.apply(options.context, options.args);
   }
 }(this));
 

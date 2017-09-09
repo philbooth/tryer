@@ -45,7 +45,7 @@
       });
   
       suite('when passing immediately:', function () {
-        var log, predicate, action, fail, pass, context, args;
+        var log, predicate, action, fail, pass;
   
         setup(function (done) {
           log = {};
@@ -53,15 +53,11 @@
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
-          context = {};
-          args = [ 'foo', 'bar' ];
           tryer({
             when: predicate,
             action: action,
             fail: fail,
             pass: pass,
-            context: context,
-            args: args,
             interval: 0,
             limit: 3
           });
@@ -71,28 +67,8 @@
           assert.strictEqual(log.counts.predicate, 1);
         });
   
-        test('predicate was passed correct arguments', function () {
-          assert.lengthOf(log.args.predicate[0], 2);
-          assert.strictEqual(log.args.predicate[0][0], 'foo');
-          assert.strictEqual(log.args.predicate[0][1], 'bar');
-        });
-  
-        test('predicate was applied to correct context', function () {
-          assert.strictEqual(log.these.predicate[0], context);
-        });
-  
         test('action was called once', function () {
           assert.strictEqual(log.counts.action, 1);
-        });
-  
-        test('action was passed correct arguments', function () {
-          assert.lengthOf(log.args.action[0], 2);
-          assert.strictEqual(log.args.action[0][0], 'foo');
-          assert.strictEqual(log.args.action[0][1], 'bar');
-        });
-  
-        test('action was applied to correct context', function () {
-          assert.strictEqual(log.these.action[0], context);
         });
   
         test('fail was not called', function () {
@@ -102,20 +78,10 @@
         test('pass was called once', function () {
           assert.strictEqual(log.counts.pass, 1);
         });
-  
-        test('pass was passed correct arguments', function () {
-          assert.lengthOf(log.args.pass[0], 2);
-          assert.strictEqual(log.args.pass[0][0], 'foo');
-          assert.strictEqual(log.args.pass[0][1], 'bar');
-        });
-  
-        test('pass was applied to correct context', function () {
-          assert.strictEqual(log.these.pass[0], context);
-        });
       });
   
       suite('when failing three times:', function () {
-        var log, predicate, action, fail, pass, context, args;
+        var log, predicate, action, fail, pass;
   
         setup(function (done) {
           log = {};
@@ -123,15 +89,11 @@
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
-          context = {};
-          args = [ 'baz' ];
           tryer({
             when: predicate,
             action: action,
             fail: fail,
             pass: pass,
-            context: context,
-            args: args,
             interval: 0,
             limit: 3
           });
@@ -141,48 +103,12 @@
           assert.strictEqual(log.counts.predicate, 3);
         });
   
-        test('predicate was passed correct arguments first time', function () {
-          assert.lengthOf(log.args.predicate[0], 1);
-          assert.strictEqual(log.args.predicate[0][0], 'baz');
-        });
-  
-        test('predicate was applied to correct context first time', function () {
-          assert.strictEqual(log.these.predicate[0], context);
-        });
-  
-        test('predicate was passed correct arguments second time', function () {
-          assert.lengthOf(log.args.predicate[1], 1);
-          assert.strictEqual(log.args.predicate[1][0], 'baz');
-        });
-  
-        test('predicate was applied to correct context second time', function () {
-          assert.strictEqual(log.these.predicate[1], context);
-        });
-  
-        test('predicate was passed correct arguments third time', function () {
-          assert.lengthOf(log.args.predicate[2], 1);
-          assert.strictEqual(log.args.predicate[2][0], 'baz');
-        });
-  
-        test('predicate was applied to correct context third time', function () {
-          assert.strictEqual(log.these.predicate[2], context);
-        });
-  
         test('action was not called', function () {
           assert.strictEqual(log.counts.action, 0);
         });
   
         test('fail was called once', function () {
           assert.strictEqual(log.counts.fail, 1);
-        });
-  
-        test('fail was passed correct arguments', function () {
-          assert.lengthOf(log.args.fail[0], 1);
-          assert.strictEqual(log.args.fail[0][0], 'baz');
-        });
-  
-        test('fail was applied to correct context', function () {
-          assert.strictEqual(log.these.fail[0], context);
         });
   
         test('pass was not called', function () {
@@ -259,7 +185,7 @@
       });
   
       suite('until passing immediately:', function () {
-        var log, predicate, action, fail, pass, context, args;
+        var log, predicate, action, fail, pass;
   
         setup(function (done) {
           log = {};
@@ -267,15 +193,11 @@
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
-          context = {};
-          args = [ 'foo', 'bar' ];
           tryer({
             until: predicate,
             action: action,
             fail: fail,
             pass: pass,
-            context: context,
-            args: args,
             interval: 0,
             limit: 3
           });
@@ -285,28 +207,8 @@
           assert.strictEqual(log.counts.predicate, 1);
         });
   
-        test('predicate was passed correct arguments', function () {
-          assert.lengthOf(log.args.predicate[0], 2);
-          assert.strictEqual(log.args.predicate[0][0], 'foo');
-          assert.strictEqual(log.args.predicate[0][1], 'bar');
-        });
-  
-        test('predicate was applied to correct context', function () {
-          assert.strictEqual(log.these.predicate[0], context);
-        });
-  
         test('action was called once', function () {
           assert.strictEqual(log.counts.action, 1);
-        });
-  
-        test('action was passed correct arguments', function () {
-          assert.lengthOf(log.args.action[0], 2);
-          assert.strictEqual(log.args.action[0][0], 'foo');
-          assert.strictEqual(log.args.action[0][1], 'bar');
-        });
-  
-        test('action was applied to correct context', function () {
-          assert.strictEqual(log.these.action[0], context);
         });
   
         test('fail was not called', function () {
@@ -317,33 +219,13 @@
           assert.strictEqual(log.counts.pass, 1);
         });
   
-        test('pass was passed correct arguments', function () {
-          assert.lengthOf(log.args.pass[0], 2);
-          assert.strictEqual(log.args.pass[0][0], 'foo');
-          assert.strictEqual(log.args.pass[0][1], 'bar');
-        });
-  
-        test('pass was applied to correct context', function () {
-          assert.strictEqual(log.these.pass[0], context);
-        });
-  
         test('pass was called once', function () {
           assert.strictEqual(log.counts.pass, 1);
-        });
-  
-        test('pass was passed correct arguments', function () {
-          assert.lengthOf(log.args.pass[0], 2);
-          assert.strictEqual(log.args.pass[0][0], 'foo');
-          assert.strictEqual(log.args.pass[0][1], 'bar');
-        });
-  
-        test('pass was applied to correct context', function () {
-          assert.strictEqual(log.these.pass[0], context);
         });
       });
   
       suite('until failing three times:', function () {
-        var log, predicate, action, fail, pass, context, args;
+        var log, predicate, action, fail, pass;
   
         setup(function (done) {
           log = {};
@@ -351,15 +233,11 @@
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
-          context = {};
-          args = [ 'baz' ];
           tryer({
             until: predicate,
             action: action,
             fail: fail,
             pass: pass,
-            context: context,
-            args: args,
             interval: 0,
             limit: 3
           });
@@ -369,75 +247,12 @@
           assert.strictEqual(log.counts.predicate, 3);
         });
   
-        test('predicate was passed correct arguments first time', function () {
-          assert.lengthOf(log.args.predicate[0], 1);
-          assert.strictEqual(log.args.predicate[0][0], 'baz');
-        });
-  
-        test('predicate was applied to correct context first time', function () {
-          assert.strictEqual(log.these.predicate[0], context);
-        });
-  
-        test('predicate was passed correct arguments second time', function () {
-          assert.lengthOf(log.args.predicate[1], 1);
-          assert.strictEqual(log.args.predicate[1][0], 'baz');
-        });
-  
-        test('predicate was applied to correct context second time', function () {
-          assert.strictEqual(log.these.predicate[1], context);
-        });
-  
-        test('predicate was passed correct arguments third time', function () {
-          assert.lengthOf(log.args.predicate[2], 1);
-          assert.strictEqual(log.args.predicate[2][0], 'baz');
-        });
-  
-        test('predicate was applied to correct context third time', function () {
-          assert.strictEqual(log.these.predicate[2], context);
-        });
-  
         test('action was called three times', function () {
           assert.strictEqual(log.counts.action, 3);
         });
   
-        test('action was passed correct arguments first time', function () {
-          assert.lengthOf(log.args.action[0], 1);
-          assert.strictEqual(log.args.action[0][0], 'baz');
-        });
-  
-        test('action was applied to correct context first time', function () {
-          assert.strictEqual(log.these.action[0], context);
-        });
-  
-        test('action was passed correct arguments second time', function () {
-          assert.lengthOf(log.args.action[1], 1);
-          assert.strictEqual(log.args.action[1][0], 'baz');
-        });
-  
-        test('action was applied to correct context second time', function () {
-          assert.strictEqual(log.these.action[1], context);
-        });
-  
-        test('action was passed correct arguments third time', function () {
-          assert.lengthOf(log.args.action[2], 1);
-          assert.strictEqual(log.args.action[2][0], 'baz');
-        });
-  
-        test('action was applied to correct context third time', function () {
-          assert.strictEqual(log.these.action[2], context);
-        });
-  
         test('fail was called once', function () {
           assert.strictEqual(log.counts.fail, 1);
-        });
-  
-        test('fail was passed correct arguments', function () {
-          assert.lengthOf(log.args.fail[0], 1);
-          assert.strictEqual(log.args.fail[0][0], 'baz');
-        });
-  
-        test('fail was applied to correct context', function () {
-          assert.strictEqual(log.these.fail[0], context);
         });
   
         test('pass was not called', function () {
