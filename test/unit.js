@@ -49,7 +49,7 @@
   
         setup(function (done) {
           log = {};
-          predicate = spooks.fn({ name: 'predicate', log: log, result: true });
+          predicate = spooks.fn({ name: 'predicate', log: log, results: [ true ] });
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
@@ -119,7 +119,7 @@
   
         setup(function (done) {
           log = {};
-          predicate = spooks.fn({ name: 'predicate', log: log, result: false });
+          predicate = spooks.fn({ name: 'predicate', log: log, results: [ false ] });
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
@@ -195,7 +195,7 @@
   
         setup(function (done) {
           log = {};
-          predicate = spooks.fn({ name: 'predicate', log: log, result: false });
+          predicate = spooks.fn({ name: 'predicate', log: log, results: [ false ] });
           action = spooks.fn({ name: 'action', log: log, callback: done });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           trier({ when: predicate, action: action, fail: fail, interval: 0, limit: 5 });
@@ -223,7 +223,7 @@
           predicate = spooks.fn({
             name: 'predicate',
             log: log,
-            result: false,
+            results: [ false ],
             callback: function () {
               timestamps.push(Date.now());
             }
@@ -263,7 +263,7 @@
   
         setup(function (done) {
           log = {};
-          predicate = spooks.fn({ name: 'predicate', log: log, result: true });
+          predicate = spooks.fn({ name: 'predicate', log: log, results: [ true ] });
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
@@ -347,7 +347,7 @@
   
         setup(function (done) {
           log = {};
-          predicate = spooks.fn({ name: 'predicate', log: log, result: false });
+          predicate = spooks.fn({ name: 'predicate', log: log, results: [ false ] });
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
@@ -450,7 +450,7 @@
   
         setup(function (done) {
           log = {};
-          predicate = spooks.fn({ name: 'predicate', log: log, result: false });
+          predicate = spooks.fn({ name: 'predicate', log: log, results: [ false ] });
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           trier({ until: predicate, action: action, fail: fail, interval: 0, limit: 5 });
@@ -478,7 +478,7 @@
           predicate = spooks.fn({
             name: 'predicate',
             log: log,
-            result: false,
+            results: [ false ],
             callback: function () {
               timestamps.push(Date.now());
             }
