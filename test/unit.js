@@ -1,4 +1,4 @@
-/*globals chai, spooks, require, trier, suite, setup, test, setTimeout */
+/*globals chai, spooks, require, tryer, suite, setup, test, setTimeout */
 
 (function (require, spooks) {
   'use strict';
@@ -7,14 +7,14 @@
 
   if (require === undefined) {
     assert = chai.assert;
-    require = function () { return trier; };
+    require = function () { return tryer; };
   } else {
     assert = require('chai').assert;
     spooks = require('spooks');
-    modulePath = '../src/trier';
+    modulePath = '../src/tryer';
   }
   
-  suite('trier:', function () {
+  suite('tryer:', function () {
     test('require does not throw', function () {
       assert.doesNotThrow(function () {
         require(modulePath);
@@ -22,25 +22,25 @@
     });
   
     suite('require:', function () {
-      var trier;
+      var tryer;
   
       setup(function () {
-        trier = require(modulePath);
+        tryer = require(modulePath);
       });
   
       test('function is exported', function () {
-        assert.isFunction(trier);
+        assert.isFunction(tryer);
       });
   
-      test('trier throws when options is null', function () {
+      test('tryer throws when options is null', function () {
         assert.throws(function () {
-          trier(null);
+          tryer(null);
         });
       });
   
-      test('trier does not throw when options is object', function () {
+      test('tryer does not throw when options is object', function () {
         assert.doesNotThrow(function () {
-          trier({});
+          tryer({});
         });
       });
   
@@ -55,7 +55,7 @@
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
           context = {};
           args = [ 'foo', 'bar' ];
-          trier({
+          tryer({
             when: predicate,
             action: action,
             fail: fail,
@@ -125,7 +125,7 @@
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
           context = {};
           args = [ 'baz' ];
-          trier({
+          tryer({
             when: predicate,
             action: action,
             fail: fail,
@@ -198,7 +198,7 @@
           predicate = spooks.fn({ name: 'predicate', log: log, results: [ false ] });
           action = spooks.fn({ name: 'action', log: log, callback: done });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
-          trier({ when: predicate, action: action, fail: fail, interval: 0, limit: 5 });
+          tryer({ when: predicate, action: action, fail: fail, interval: 0, limit: 5 });
         });
   
         test('predicate was called five times', function () {
@@ -231,7 +231,7 @@
           action = spooks.fn({ name: 'action', log: log, callback: done });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           timestamps.push(Date.now());
-          trier({ when: predicate, action: action, fail: fail, interval: -10, limit: 4 });
+          tryer({ when: predicate, action: action, fail: fail, interval: -10, limit: 4 });
         });
   
         test('five timestamps were recorded', function () {
@@ -269,7 +269,7 @@
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
           context = {};
           args = [ 'foo', 'bar' ];
-          trier({
+          tryer({
             until: predicate,
             action: action,
             fail: fail,
@@ -353,7 +353,7 @@
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
           context = {};
           args = [ 'baz' ];
-          trier({
+          tryer({
             until: predicate,
             action: action,
             fail: fail,
@@ -453,7 +453,7 @@
           predicate = spooks.fn({ name: 'predicate', log: log, results: [ false ] });
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
-          trier({ until: predicate, action: action, fail: fail, interval: 0, limit: 5 });
+          tryer({ until: predicate, action: action, fail: fail, interval: 0, limit: 5 });
         });
   
         test('predicate was called five times', function () {
@@ -486,7 +486,7 @@
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           timestamps.push(Date.now());
-          trier({ until: predicate, action: action, fail: fail, interval: -10, limit: 4 });
+          tryer({ until: predicate, action: action, fail: fail, interval: -10, limit: 4 });
         });
   
         test('five timestamps were recorded', function () {
@@ -541,7 +541,7 @@
           action = spooks.fn({ name: 'action', log: log });
           fail = spooks.fn({ name: 'fail', log: log, callback: done });
           pass = spooks.fn({ name: 'pass', log: log, callback: done });
-          trier({
+          tryer({
             when: predicates.when,
             until: predicates.until,
             action: action,
@@ -583,11 +583,11 @@
             timestamps.push(Date.now());
             return false;
           };
-          action = function (trierDone) {
-            setTimeout(trierDone, 10);
+          action = function (tryerDone) {
+            setTimeout(tryerDone, 10);
           };
           timestamps.push(Date.now());
-          trier({ until: predicate, action: action, fail: done, interval: 0, limit: 3 });
+          tryer({ until: predicate, action: action, fail: done, interval: 0, limit: 3 });
         });
   
         test('four timestamps were recorded', function () {

@@ -7,15 +7,15 @@
 
   if (typeof define === 'function' && define.amd) {
     define(function () {
-      return trier;
+      return tryer;
     });
   } else if (typeof module !== 'undefined' && module !== null) {
-    module.exports = trier;
+    module.exports = tryer;
   } else {
-    globals.trier = trier;
+    globals.tryer = tryer;
   }
 
-  // Public function `trier`.
+  // Public function `tryer`.
   //
   // Performs some action when pre-requisite conditions are met and/or until
   // post-requisite conditions are satisfied.
@@ -49,7 +49,7 @@
   //                           indefinitely (i.e. never fail). Defaults to -1.
   //
   // @example
-  //   trier({
+  //   tryer({
   //     when: () => db.isConnected,
   //     action: () => db.insert(user),
   //     fail () {
@@ -62,7 +62,7 @@
   //
   // @example
   //   let sent = false;
-  //   trier({
+  //   tryer({
   //     until: () => sent,
   //     action: done => {
   //       smtp.send(email, error => {
@@ -76,7 +76,7 @@
   //     interval: -1000,
   //     limit: -1
   //   });
-  function trier (options) {
+  function tryer (options) {
     options = normaliseOptions(options);
 
     iterateWhen();

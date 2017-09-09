@@ -1,18 +1,24 @@
 {
-  "name": "trier",
+  "name": "tryer",
   "version": "0.3.6",
-  "description": "Because everyone loves a trier! Conditional and repeated task invocation for node and browser.",
-  "repo": "philbooth/trier.js",
+  "description": "Because everyone loves a tryer! Conditional and repeated task invocation for node and browser.",
+  "repo": "philbooth/tryer",
   "license": "MIT",
-  "main": "src/trier.js",
+  "main": "src/tryer.js",
   "keywords": [
-      "repeat",
-      "retry",
-      "predicate",
-      "conditional",
-      "invocation"
+    "repeat",
+    "retry",
+    "predicate",
+    "conditional",
+    "invocation",
+    "execution",
+    "loop",
+    "condition",
+    "termination",
+    "exponential",
+    "backoff"
   ],
   "scripts": [
-      "src/trier.js"
+    "src/tryer.js"
   ]
 }
