@@ -124,6 +124,7 @@
   }
 
   function normaliseOptions (options) {
+    options = options || {}
     return {
       count: 0,
       when: normalisePredicate(options.when),

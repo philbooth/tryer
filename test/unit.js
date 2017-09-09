@@ -32,9 +32,9 @@
         assert.isFunction(tryer);
       });
   
-      test('tryer throws when options is null', function () {
-        assert.throws(function () {
-          tryer(null);
+      test('tryer does not throw when options is missing', function () {
+        assert.doesNotThrow(function () {
+          tryer();
         });
       });
   
