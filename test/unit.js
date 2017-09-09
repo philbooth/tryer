@@ -1,4 +1,4 @@
-/*globals chai, require, trier, suite, setup, test, setTimeout */
+/*globals chai, spooks, require, trier, suite, setup, test, setTimeout */
 
 (function (require, spooks) {
   'use strict';
@@ -33,7 +33,7 @@
       });
   
       test('trier throws when options is null', function () {
-        assert['throws'](function () {
+        assert.throws(function () {
           trier(null);
         });
       });
