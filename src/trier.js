@@ -5,13 +5,17 @@
 (function (globals) {
     'use strict';
 
-    var functions = {
-        attempt: attempt
-    };
+    if (typeof define === 'function' && define.amd) {
+        define(function () {
+            return trier;
+        });
+    } else if (typeof module !== 'undefined' && module !== null) {
+        module.exports = trier;
+    } else {
+        globals.trier = trier;
+    }
 
-    exportFunctions();
-
-    // Public function `attempt`.
+    // Public function `trier`.
     //
     // Performs some action when pre-requisite conditions are met and/or until
     // post-requisite conditions are satisfied.
@@ -45,14 +49,10 @@
     //                            indefinitely (i.e. never fail). Defaults to -1.
     //
     // @example
-    //     trier.attempt({
-    //         when: function () {
-    //             return db.isConnected;
-    //         },
-    //         action: function () {
-    //             db.insert(user);
-    //         },
-    //         fail: function () {
+    //     trier({
+    //         when: () => db.isConnected,
+    //         action: () => db.insert(user),
+    //         fail () {
     //             log.error('No database connection, terminating.');
     //             process.exit(1);
     //         },
@@ -61,26 +61,22 @@
     //     });
     //
     // @example
-    //     var sent = false
-    //     trier.attempt({
-    //         until: function () {
-    //             return sent;
-    //         },
-    //         action: function (done) {
-    //             smtp.send(email, function (error) {
-    //                 if (!error) {
+    //     let sent = false;
+    //     trier({
+    //         until: () => sent,
+    //         action: done => {
+    //             smtp.send(email, error => {
+    //                 if (! error) {
     //                     sent = true;
     //                 }
     //                 done();
     //             });
     //         },
-    //         pass: function () {
-    //             next();
-    //         },
+    //         pass: next,
     //         interval: -1000,
     //         limit: -1
     //     });
-    function attempt (options) {
+    function trier (options) {
         options = normaliseOptions(options);
 
         iterateWhen();
@@ -237,18 +233,6 @@
 
     function pass (options) {
         options.pass.apply(options.context, options.args);
-    }
-
-    function exportFunctions () {
-        if (typeof define === 'function' && define.amd) {
-            define(function () {
-                return functions;
-            });
-        } else if (typeof module !== 'undefined' && module !== null) {
-            module.exports = functions;
-        } else {
-            globals.trier = functions;
-        }
     }
 }(this));
 

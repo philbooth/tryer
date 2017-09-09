@@ -10,28 +10,22 @@ suite 'trier:', ->
     assert.doesNotThrow ->
       require modulePath
 
-  test 'require returns object', ->
-    assert.isObject require modulePath
-
   suite 'require:', ->
     trier = undefined
 
     setup ->
       trier = require modulePath
 
-    teardown ->
-      trier = undefined
+    test 'function is exported', ->
+      assert.isFunction trier
 
-    test 'attempt function is exported', ->
-      assert.isFunction trier.attempt
-
-    test 'attempt throws when options is null', ->
+    test 'trier throws when options is null', ->
       assert.throws ->
-        trier.attempt null
+        trier null
 
-    test 'attempt does not throw when options is object', ->
+    test 'trier does not throw when options is object', ->
       assert.doesNotThrow ->
-        trier.attempt {}
+        trier {}
 
     suite 'when passing immediately:', ->
       log = predicate = action = fail = pass = context = args = undefined
@@ -44,7 +38,7 @@ suite 'trier:', ->
         pass = spooks.fn { name: 'pass', log, callback: done }
         context = {}
         args = [ 'foo', 'bar' ]
-        trier.attempt { when: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
+        trier { when: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
 
       teardown ->
         log = predicate = action = fail = pass = context = args = undefined
@@ -96,7 +90,7 @@ suite 'trier:', ->
         pass = spooks.fn { name: 'pass', log, callback: done }
         context = {}
         args = [ 'baz' ]
-        trier.attempt { when: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
+        trier { when: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
 
       teardown ->
         log = predicate = action = fail = pass = context = args = undefined
@@ -149,7 +143,7 @@ suite 'trier:', ->
         predicate = spooks.fn { name: 'predicate', log, result: false }
         action = spooks.fn { name: 'action', log, callback: done }
         fail = spooks.fn { name: 'fail', log, callback: done }
-        trier.attempt { when: predicate, action, fail, interval: 0, limit: 5 }
+        trier { when: predicate, action, fail, interval: 0, limit: 5 }
 
       teardown ->
         log = predicate = action = fail = undefined
@@ -179,7 +173,7 @@ suite 'trier:', ->
         action = spooks.fn { name: 'action', log, callback: done }
         fail = spooks.fn { name: 'fail', log, callback: done }
         timestamps.push Date.now()
-        trier.attempt { when: predicate, action, fail, interval: -32, limit: 4 }
+        trier { when: predicate, action, fail, interval: -32, limit: 4 }
 
       teardown ->
         log = timestamps = predicate = action = fail = undefined
@@ -213,7 +207,7 @@ suite 'trier:', ->
         pass = spooks.fn { name: 'pass', log, callback: done }
         context = {}
         args = [ 'foo', 'bar' ]
-        trier.attempt { until: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
+        trier { until: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
 
       teardown ->
         log = predicate = action = fail = pass = context = args = undefined
@@ -276,7 +270,7 @@ suite 'trier:', ->
         pass = spooks.fn { name: 'pass', log, callback: done }
         context = {}
         args = [ 'baz' ]
-        trier.attempt { until: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
+        trier { until: predicate, action, fail, pass, context, args, interval: 0, limit: 3 }
 
       teardown ->
         log = predicate = action = fail = pass = context = args = undefined
@@ -350,7 +344,7 @@ suite 'trier:', ->
         predicate = spooks.fn { name: 'predicate', log, result: false }
         action = spooks.fn { name: 'action', log }
         fail = spooks.fn { name: 'fail', log, callback: done }
-        trier.attempt { until: predicate, action, fail, interval: 0, limit: 5 }
+        trier { until: predicate, action, fail, interval: 0, limit: 5 }
 
       teardown ->
         log = predicate = action = fail = undefined
@@ -380,7 +374,7 @@ suite 'trier:', ->
         action = spooks.fn { name: 'action', log }
         fail = spooks.fn { name: 'fail', log, callback: done }
         timestamps.push Date.now()
-        trier.attempt { until: predicate, action, fail, interval: -32, limit: 4 }
+        trier { until: predicate, action, fail, interval: -32, limit: 4 }
 
       teardown ->
         log = timestamps = predicate = action = fail = undefined
@@ -425,7 +419,7 @@ suite 'trier:', ->
         action = spooks.fn { name: 'action', log }
         fail = spooks.fn { name: 'fail', log, callback: done }
         pass = spooks.fn { name: 'pass', log, callback: done }
-        trier.attempt { when: predicates.when, until: predicates.until, action, fail, pass, interval: 0, limit: 4 }
+        trier { when: predicates.when, until: predicates.until, action, fail, pass, interval: 0, limit: 4 }
 
       teardown ->
         log = predicateLoggers = predicates = action = fail = pass = undefined
@@ -457,7 +451,7 @@ suite 'trier:', ->
         action = (trierDone) ->
           setTimeout trierDone, 64
         timestamps.push Date.now()
-        trier.attempt { until: predicate, action, fail: done, interval: 0, limit: 3 }
+        trier { until: predicate, action, fail: done, interval: 0, limit: 3 }
 
       teardown ->
         log = timestamps = predicate = action = fail = undefined
