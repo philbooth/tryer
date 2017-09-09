@@ -1,35 +1,34 @@
 {
-    "name": "trier",
-    "version": "0.3.6",
-    "description": "Because everyone loves a trier! Conditional and repeated task invocation for node and browser.",
-    "homepage": "https://github.com/philbooth/trier.js",
-    "bugs": "https://github.com/philbooth/trier.js/issues",
-    "license": "MIT",
-    "author": "Phil Booth <pmbooth@gmail.com> (https://github.com/philbooth)",
-    "main": "./src/trier",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/philbooth/trier.js.git"
-    },
-    "keywords": [
-        "repeat",
-        "retry",
-        "predicate",
-        "conditional",
-        "invocation"
-    ],
-    "devDependencies": {
-        "jshint": "2.3.x",
-        "coffee-script": "1.6.x",
-        "mocha": "1.14.x",
-        "chai": "1.8.x",
-        "spooks": "0.5.x",
-        "uglify-js": "2.4.x"
-    },
-    "scripts": {
-        "lint": "./node_modules/.bin/jshint ./src/trier.js --config config/jshint.json",
-        "test": "./node_modules/.bin/mocha --ui tdd --reporter spec --compilers coffee:coffee-script --colors ./test/trier.coffee",
-        "minify": "./node_modules/.bin/uglifyjs ./src/trier.js --compress --mangle --output ./lib/trier.min.js"
-    }
+  "name": "trier",
+  "version": "0.3.6",
+  "description": "Because everyone loves a trier! Conditional and repeated task invocation for node and browser.",
+  "homepage": "https://github.com/philbooth/trier.js",
+  "bugs": "https://github.com/philbooth/trier.js/issues",
+  "license": "MIT",
+  "author": "Phil Booth <pmbooth@gmail.com> (https://github.com/philbooth)",
+  "main": "./src/trier",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philbooth/trier.js.git"
+  },
+  "keywords": [
+    "repeat",
+    "retry",
+    "predicate",
+    "conditional",
+    "invocation"
+  ],
+  "devDependencies": {
+    "jshint": "2.3.x",
+    "mocha": "1.14.x",
+    "chai": "1.8.x",
+    "spooks": "0.5.x",
+    "uglify-js": "2.4.x"
+  },
+  "scripts": {
+    "lint": "jshint src/trier.js test/trier.js --config config/jshint.json",
+    "test": "mocha --ui tdd --reporter spec --colors test/trier.js",
+    "minify": "uglifyjs ./src/trier.js --compress --mangle --output ./lib/trier.min.js"
+  }
 }
 
