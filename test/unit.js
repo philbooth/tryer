@@ -424,6 +424,86 @@
           assert.isTrue(timestamps[3] < timestamps[2] + 20);
         });
       });
+  
+      if (typeof Promise === 'function') {
+        suite('promise-resolving action:', function () {
+          var log, timestamps, predicate, action;
+  
+          setup(function (done) {
+            log = {};
+            timestamps = [];
+            predicate = function () {
+              timestamps.push(Date.now());
+              return false;
+            };
+            action = function () {
+              return new Promise(function (resolve) {
+                setTimeout(resolve, 10)
+              });
+            };
+            timestamps.push(Date.now());
+            tryer({ until: predicate, action: action, fail: done, interval: 0, limit: 3 });
+          });
+  
+          test('four timestamps were recorded', function () {
+            assert.lengthOf(timestamps, 4);
+          });
+  
+          test('first interval is about 10 ms', function () {
+            assert.isTrue(timestamps[1] >= timestamps[0] + 10);
+            assert.isTrue(timestamps[1] < timestamps[0] + 20);
+          });
+  
+          test('second interval is about 10 ms', function () {
+            assert.isTrue(timestamps[2] >= timestamps[1] + 10);
+            assert.isTrue(timestamps[2] < timestamps[1] + 20);
+          });
+  
+          test('third interval is about 10 ms', function () {
+            assert.isTrue(timestamps[3] >= timestamps[2] + 10);
+            assert.isTrue(timestamps[3] < timestamps[2] + 20);
+          });
+        });
+
+        suite('promise-rejecting action:', function () {
+          var log, timestamps, predicate, action;
+  
+          setup(function (done) {
+            log = {};
+            timestamps = [];
+            predicate = function () {
+              timestamps.push(Date.now());
+              return false;
+            };
+            action = function () {
+              return new Promise(function (_, reject) {
+                setTimeout(reject, 10)
+              });
+            };
+            timestamps.push(Date.now());
+            tryer({ until: predicate, action: action, fail: done, interval: 0, limit: 3 });
+          });
+  
+          test('four timestamps were recorded', function () {
+            assert.lengthOf(timestamps, 4);
+          });
+  
+          test('first interval is about 10 ms', function () {
+            assert.isTrue(timestamps[1] >= timestamps[0] + 10);
+            assert.isTrue(timestamps[1] < timestamps[0] + 20);
+          });
+  
+          test('second interval is about 10 ms', function () {
+            assert.isTrue(timestamps[2] >= timestamps[1] + 10);
+            assert.isTrue(timestamps[2] < timestamps[1] + 20);
+          });
+  
+          test('third interval is about 10 ms', function () {
+            assert.isTrue(timestamps[3] >= timestamps[2] + 10);
+            assert.isTrue(timestamps[3] < timestamps[2] + 20);
+          });
+        });
+      }
     });
   });
 }(

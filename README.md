@@ -119,12 +119,15 @@ the following properties:
 
 * `action`:
   The function that you want to invoke.
-  If your implementation of `action`
-  expects arguments,
-  it will be treated as asynchronous
-  and passed an additional function parameter, `done`.
+  If `action` returns a promise,
+  iterations will not end
+  until the promise is resolved or rejected.
+  Alternatively,
+  `action` may take a callback argument, `done`,
+  to signal that it is asynchronous.
   In that case,
-  you must call `done`
+  you are responsible
+  for calling `done`
   when the action is finished.
   If `action` is not set,
   it defaults to an empty function.
@@ -228,6 +231,15 @@ tryer({
   },
   until: () => sent,
   interval: -1000,
+  limit: -1
+});
+```
+
+```javascript
+// Poll a device at 30-second intervals, continuing indefinitely.
+tryer({
+  action: () => device.poll().then(response => handle(response)),
+  interval: 30000,
   limit: -1
 });
 ```

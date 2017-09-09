@@ -21,10 +21,11 @@
   // post-requisite conditions are satisfied.
   //
   // @option action {function} The function that you want to invoke. Defaults to `() => {}`.
-  //                           If your implementation of `action` expects any arguments, it
-  //                           will be treated as asynchronous and passed an extra parameter,
-  //                           `done`. In that case, you must call `done` when the action is
-  //                           finished.
+  //                           If `action` returns a promise, iterations will not end until
+  //                           the promise is resolved or rejected. Alternatively, `action`
+  //                           may take a callback argument, `done`, to signal that it is
+  //                           asynchronous. In that case, you are responsible for calling
+  //                           `done` when the action is finished.
   //
   // @option when {function}   Predicate used to test pre-conditions. Should return `false`
   //                           to postpone `action` or `true` to perform it. Defaults to
@@ -109,8 +110,15 @@
     }
 
     function iterateUntil () {
+      var result;
+
       if (isActionSynchronous(options)) {
-        options.action();
+        result = options.action();
+
+        if (result && isFunction(result.then)) {
+          return result.then(postRecur, postRecur);
+        }
+
         return postRecur();
       }
 
