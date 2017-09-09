@@ -1,16 +1,16 @@
 /*globals chai, require, trier, suite, setup, test, setTimeout */
 
-(function (require) {
+(function (require, spooks) {
   'use strict';
 
   var assert, modulePath;
 
-  if (typeof require === 'undefined') {
+  if (require === undefined) {
     assert = chai.assert;
     require = function () { return trier; };
   } else {
     assert = require('chai').assert;
-    var spooks = require('spooks');
+    spooks = require('spooks');
     modulePath = '../src/trier';
   }
   
@@ -611,5 +611,8 @@
       });
     });
   });
-}(typeof require === 'function' ? require : undefined));
+}(
+  typeof require === 'function' ? require : undefined,
+  typeof spooks === 'object' ? spooks : undefined)
+);
   

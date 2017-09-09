@@ -26,8 +26,8 @@
     "uglify-js": "2.4.x"
   },
   "scripts": {
-    "lint": "jshint src/trier.js test/trier.js --config config/jshint.json",
-    "test": "mocha --ui tdd --reporter spec --colors test/trier.js",
+    "lint": "jshint src/trier.js test/unit.js --config config/jshint.json",
+    "test": "mocha --ui tdd --reporter spec --colors test/unit.js",
     "minify": "uglifyjs ./src/trier.js --compress --mangle --output ./lib/trier.min.js"
   }
 }
